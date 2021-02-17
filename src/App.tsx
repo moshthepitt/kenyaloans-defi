@@ -1,29 +1,29 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Button, ButtonGroup } from '@blueprintjs/core';
+
+import '@blueprintjs/core/lib/css/blueprint.css';
+import 'milligram/dist/milligram.css';
 
 /**
  *
  */
-function App(): JSX.Element {
+export default function App(): JSX.Element {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <div className="row">
+        <div className="column">
+          <h2>DeFi Loans</h2>
+        </div>
+      </div>
+      <div className="row">
+        <div className="column">
+          <ButtonGroup vertical={true} minimal={true}>
+            <Button icon="database">Queries</Button>
+            <Button icon="function">Functions</Button>
+          </ButtonGroup>
+        </div>
+        <div className="column column-75">.column</div>
+      </div>
     </div>
   );
 }
-
-export default App;
