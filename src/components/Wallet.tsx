@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { PublicKey } from '@solana/web3.js';
 import { createStore } from 'react-hooks-global-state';
 import { Button } from '@blueprintjs/core';
-import { CONNECT, DISCONNECT, TESTNET, WALLET_PROVIDER_URL } from '../constants';
+import { CONNECT, DISCONNECT, TESTNET, WALLET, WALLET_PROVIDER_URL } from '../constants';
 
 /* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-explicit-any */
 const sol_adapter: any = require('@project-serum/sol-wallet-adapter');
@@ -34,8 +34,13 @@ export const walletReducer = (state: WalletState, action: WalletAction): WalletS
 const initialState = { wallet: walletAdapter };
 const { dispatch, useGlobalState } = createStore(walletReducer, initialState);
 
-export const WalletConnection = (): JSX.Element => {
-  const network = TESTNET;
+interface ConnectionProps {
+  network: string;
+}
+
+export const WalletConnection = (props: ConnectionProps): JSX.Element => {
+  const { network } = props;
+  const [wallet] = useGlobalState(WALLET);
   const urlWallet = useMemo(() => new Wallet(WALLET_PROVIDER_URL, network), [
     WALLET_PROVIDER_URL,
     network,
@@ -53,15 +58,34 @@ export const WalletConnection = (): JSX.Element => {
   return (
     <div>
       <div>
-        <Button icon="power" small={true} onClick={async () => await urlWallet.connect()}>
-          Connect to Wallet
-        </Button>{' '}
-        <Button icon="delete" small={true} onClick={async () => await urlWallet.disconnect()}>
-          Disconnect from Wallet
-        </Button>
+        {wallet && wallet._publicKey ? (
+          <Button
+            icon="delete"
+            intent="danger"
+            small={true}
+            onClick={async () => await urlWallet.disconnect()}
+          >
+            Disconnect
+          </Button>
+        ) : (
+          <Button
+            icon="power"
+            intent="primary"
+            small={true}
+            onClick={async () => await urlWallet.connect()}
+          >
+            Connect
+          </Button>
+        )}
       </div>
     </div>
   );
 };
+
+const defaultProps: ConnectionProps = {
+  network: TESTNET,
+};
+
+WalletConnection.defaultProps = defaultProps;
 
 export { useGlobalState as useWalletGlobalState };
