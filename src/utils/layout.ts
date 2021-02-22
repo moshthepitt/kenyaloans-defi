@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-explicit-any */
-const bfl_import: any = require('buffer-layout');
+const BufferLayout: any = require('buffer-layout');
 /* eslint-enable @typescript-eslint/no-var-requires, @typescript-eslint/no-explicit-any */
-const BufferLayout = bfl_import.default;
 
 /**
  * Layout for a public key
+ *
  * @param property
  */
 const publicKey = (property = 'publicKey') => {
@@ -13,6 +13,7 @@ const publicKey = (property = 'publicKey') => {
 
 /**
  * Layout for a 64bit unsigned value
+ *
  * @param property
  */
 const uint64 = (property = 'uint64') => {
@@ -41,6 +42,7 @@ export interface LoanLayout {
   initializerPubkey: Uint8Array;
   initializerTempTokenAccountPubkey: Uint8Array;
   initializerReceiveLoanPubkey: Uint8Array;
+  loanAccountPubkey: Uint8Array;
   guarantorPubkey?: Uint8Array;
   collateralAccountPubkey?: Uint8Array;
   lenderPubkey?: Uint8Array;
@@ -52,10 +54,12 @@ export interface LoanLayout {
 }
 
 export interface LoanData {
-  loanAccountPubkey: string;
   isInitialized: boolean;
+  status: number;
   initializerAccountPubkey: string;
-  XTokenTempAccountPubkey: string;
-  initializerYTokenAccount: string;
+  initializerTempTokenAccountPubkey: string;
+  initializerReceiveLoanPubkey: string;
+  loanAccountPubkey: string;
   expectedAmount: number;
+  amount: number;
 }
