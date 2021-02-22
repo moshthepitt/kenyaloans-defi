@@ -11,12 +11,14 @@ const sol_adapter: any = require('@project-serum/sol-wallet-adapter');
 const Wallet = sol_adapter.default;
 const walletAdapter = new Wallet(WALLET_PROVIDER_URL);
 
+export type WalletType = typeof Wallet;
+
 interface WalletState {
-  wallet: typeof Wallet;
+  wallet: WalletType;
 }
 
 interface WalletAction {
-  payload?: typeof Wallet;
+  payload?: WalletType;
   type: string;
 }
 
