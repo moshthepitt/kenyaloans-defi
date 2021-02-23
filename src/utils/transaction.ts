@@ -226,3 +226,57 @@ export const guaranteeLoan = async (
 
   return await signAndSendTransaction(connection, transaction, wallet, signers);
 };
+
+interface AcceptLoanParams {
+  borrowerReceiveAccount: string /** the token account that will receive the loan requested */;
+  connection: Connection /** represents the current connection */;
+  lenderFundsAccount: string /** the token account that holds the loan */;
+  lenderRepaymentAccount: string /** the token account where repayment will be sent */;
+  loanAccount: string /** the loan account */;
+  loanProgramId: string /** the id of the loan program */;
+  wallet: WalletType /** the user wallet to sign and pay for the transaction */;
+}
+
+export const acceptLoan = async (
+  params: AcceptLoanParams
+): Promise<Result<TransactionSignature>> => {
+  const {
+    borrowerReceiveAccount,
+    connection,
+    lenderFundsAccount,
+    lenderRepaymentAccount,
+    loanAccount,
+    loanProgramId,
+    wallet,
+  } = params;
+  const loanAccountKey = new PublicKey(loanAccount);
+  const borrowerReceiveAccountKey = new PublicKey(borrowerReceiveAccount);
+  const lenderFundsAccountKey = new PublicKey(lenderFundsAccount);
+  const lenderRepaymentAccountKey = new PublicKey(lenderRepaymentAccount);
+  const loanProgramIdKey = new PublicKey(loanProgramId);
+  const transaction = new Transaction();
+
+  try {
+    transaction.add(
+      new TransactionInstruction({
+        programId: loanProgramIdKey,
+        keys: [
+          { pubkey: wallet.publicKey, isSigner: true, isWritable: false },
+          { pubkey: lenderFundsAccountKey, isSigner: false, isWritable: true },
+          { pubkey: lenderRepaymentAccountKey, isSigner: false, isWritable: true },
+          { pubkey: borrowerReceiveAccountKey, isSigner: false, isWritable: true },
+          { pubkey: loanAccountKey, isSigner: false, isWritable: true },
+          { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
+          { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+        ],
+        data: Buffer.from(Uint8Array.of(2)),
+      })
+    );
+  } catch (error) {
+    return failure(error);
+  }
+
+  const signers: Account[] = [];
+
+  return await signAndSendTransaction(connection, transaction, wallet, signers);
+};
