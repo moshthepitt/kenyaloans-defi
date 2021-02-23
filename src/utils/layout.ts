@@ -1,11 +1,9 @@
-/* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-explicit-any */
-const BufferLayout: any = require('buffer-layout');
-/* eslint-enable @typescript-eslint/no-var-requires, @typescript-eslint/no-explicit-any */
+import BufferLayout from 'buffer-layout';
 
 /**
  * Layout for a public key
  *
- * @param property
+ * @param property - the property name
  */
 const publicKey = (property = 'publicKey') => {
   return BufferLayout.blob(32, property);
@@ -14,7 +12,7 @@ const publicKey = (property = 'publicKey') => {
 /**
  * Layout for a 64bit unsigned value
  *
- * @param property
+ * @param property - the property name
  */
 const uint64 = (property = 'uint64') => {
   return BufferLayout.blob(8, property);

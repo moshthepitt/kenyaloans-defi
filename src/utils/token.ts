@@ -1,7 +1,5 @@
 import { PublicKey, SYSVAR_RENT_PUBKEY, TransactionInstruction } from '@solana/web3.js';
-/* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-explicit-any */
-const BufferLayout: any = require('buffer-layout');
-/* eslint-enable @typescript-eslint/no-var-requires, @typescript-eslint/no-explicit-any */
+import BufferLayout from 'buffer-layout';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
