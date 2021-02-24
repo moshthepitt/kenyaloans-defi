@@ -11,7 +11,7 @@ import {
 import { AccountLayout } from '@solana/spl-token';
 import BN from 'bn.js';
 import type { WalletType } from '../components/Wallet';
-import { LE, MAX, SINGLE, SINGLE_GOSSIP } from '../constants';
+import { LE, LOAN, MAX, SINGLE, SINGLE_GOSSIP } from '../constants';
 import { success, failure } from './types';
 import type { Result } from './types';
 import { initializeAccount, mintTo, TOKEN_PROGRAM_ID } from './token';
@@ -326,6 +326,8 @@ export const repayLoan = async (params: RepayLoanParams): Promise<Result<Transac
   const lenderTokenAccountKey = new PublicKey(lenderTokenAccount);
   const loanProgramIdKey = new PublicKey(loanProgramId);
   const transaction = new Transaction();
+  // get the program derived address
+  const pda = await PublicKey.findProgramAddress([Buffer.from(LOAN)], loanProgramIdKey);
 
   try {
     transaction.add(
@@ -340,7 +342,7 @@ export const repayLoan = async (params: RepayLoanParams): Promise<Result<Transac
           { pubkey: lenderAccountKey, isSigner: false, isWritable: true },
           { pubkey: lenderTokenAccountKey, isSigner: false, isWritable: true },
           { pubkey: loanAccountKey, isSigner: false, isWritable: true },
-          { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
+          { pubkey: pda[0], isSigner: false, isWritable: false },
           { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
         ],
         data: Buffer.from(Uint8Array.of(3)),
