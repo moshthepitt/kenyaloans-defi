@@ -154,8 +154,8 @@ export const initLoan = async (params: InitLoanParams): Promise<Result<Transacti
       SystemProgram.createAccount({
         fromPubkey: wallet.publicKey,
         newAccountPubkey: loanAccount.publicKey,
-        lamports: await connection.getMinimumBalanceForRentExemption(266, SINGLE_GOSSIP),
-        space: 266,
+        lamports: await connection.getMinimumBalanceForRentExemption(302, SINGLE_GOSSIP),
+        space: 302,
         programId: loanProgramIdKey,
       })
     );
@@ -189,6 +189,7 @@ export const initLoan = async (params: InitLoanParams): Promise<Result<Transacti
 
 interface GuaranteeLoanParams {
   connection: Connection /** represents the current connection */;
+  guarantorTokenAccount: string /** the token account to which the guarantor will receive payment */;
   loanAccount: string /** the loan account */;
   loanCollateralAccount: string /** the token account that holds the loan collateral */;
   loanProgramId: string /** the id of the loan program */;
@@ -198,8 +199,16 @@ interface GuaranteeLoanParams {
 export const guaranteeLoan = async (
   params: GuaranteeLoanParams
 ): Promise<Result<TransactionSignature>> => {
-  const { connection, loanAccount, loanCollateralAccount, loanProgramId, wallet } = params;
+  const {
+    connection,
+    guarantorTokenAccount,
+    loanAccount,
+    loanCollateralAccount,
+    loanProgramId,
+    wallet,
+  } = params;
   const loanAccountKey = new PublicKey(loanAccount);
+  const guarantorTokenAccountKey = new PublicKey(guarantorTokenAccount);
   const loanCollateralAccountKey = new PublicKey(loanCollateralAccount);
   const loanProgramIdKey = new PublicKey(loanProgramId);
   const transaction = new Transaction();
@@ -211,6 +220,7 @@ export const guaranteeLoan = async (
         keys: [
           { pubkey: wallet.publicKey, isSigner: true, isWritable: false },
           { pubkey: loanCollateralAccountKey, isSigner: false, isWritable: true },
+          { pubkey: guarantorTokenAccountKey, isSigner: false, isWritable: true },
           { pubkey: loanAccountKey, isSigner: false, isWritable: true },
           { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
           { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
