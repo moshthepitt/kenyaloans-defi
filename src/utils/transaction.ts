@@ -280,3 +280,67 @@ export const acceptLoan = async (
 
   return await signAndSendTransaction(connection, transaction, wallet, signers);
 };
+
+interface RepayLoanParams {
+  collateralTokenAccount: string /** the token account that holds the collateral */;
+  connection: Connection /** represents the current connection */;
+  guarantorAccount: string /** the loan guarantor's account */;
+  guarantorTokenAccount: string /** the guarantor token account to pay fees into */;
+  lenderAccount: string /** the lender's account */;
+  lenderTokenAccount: string /** the lender token account to repay loan + fees into */;
+  loanAccount: string /** the loan account */;
+  loanProgramId: string /** the id of the loan program */;
+  payerTokenAccount: string /** the token account that will be used to repay loan */;
+  wallet: WalletType /** the user wallet to sign and pay for the transaction */;
+}
+
+export const repayLoan = async (params: RepayLoanParams): Promise<Result<TransactionSignature>> => {
+  const {
+    collateralTokenAccount,
+    connection,
+    guarantorAccount,
+    guarantorTokenAccount,
+    lenderAccount,
+    lenderTokenAccount,
+    loanAccount,
+    loanProgramId,
+    payerTokenAccount,
+    wallet,
+  } = params;
+  const loanAccountKey = new PublicKey(loanAccount);
+  const payerTokenAccountKey = new PublicKey(payerTokenAccount);
+  const collateralTokenAccountKey = new PublicKey(collateralTokenAccount);
+  const guarantorAccountKey = new PublicKey(guarantorAccount);
+  const guarantorTokenAccountKey = new PublicKey(guarantorTokenAccount);
+  const lenderAccountKey = new PublicKey(lenderAccount);
+  const lenderTokenAccountKey = new PublicKey(lenderTokenAccount);
+  const loanProgramIdKey = new PublicKey(loanProgramId);
+  const transaction = new Transaction();
+
+  try {
+    transaction.add(
+      new TransactionInstruction({
+        programId: loanProgramIdKey,
+        keys: [
+          { pubkey: wallet.publicKey, isSigner: true, isWritable: false },
+          { pubkey: payerTokenAccountKey, isSigner: false, isWritable: true },
+          { pubkey: guarantorAccountKey, isSigner: false, isWritable: true },
+          { pubkey: collateralTokenAccountKey, isSigner: false, isWritable: true },
+          { pubkey: guarantorTokenAccountKey, isSigner: false, isWritable: true },
+          { pubkey: lenderAccountKey, isSigner: false, isWritable: true },
+          { pubkey: lenderTokenAccountKey, isSigner: false, isWritable: true },
+          { pubkey: loanAccountKey, isSigner: false, isWritable: true },
+          { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
+          { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+        ],
+        data: Buffer.from(Uint8Array.of(3)),
+      })
+    );
+  } catch (error) {
+    return failure(error);
+  }
+
+  const signers: Account[] = [];
+
+  return await signAndSendTransaction(connection, transaction, wallet, signers);
+};
