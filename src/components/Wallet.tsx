@@ -64,6 +64,7 @@ export const WalletConnection = (props: ConnectionProps): JSX.Element => {
           <Button
             icon="delete"
             intent="danger"
+            minimal={true}
             small={true}
             onClick={async () => await urlWallet.disconnect()}
           >
@@ -73,6 +74,7 @@ export const WalletConnection = (props: ConnectionProps): JSX.Element => {
           <Button
             icon="power"
             intent="primary"
+            minimal={true}
             small={true}
             onClick={async () => await urlWallet.connect()}
           >
