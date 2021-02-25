@@ -14,6 +14,7 @@ import type { WalletType } from '../components/Wallet';
 import { LE, LOAN, MAX, SINGLE, SINGLE_GOSSIP } from '../constants';
 import { success, failure } from './types';
 import type { Result } from './types';
+import { LOAN_ACCOUNT_DATA_LAYOUT } from './layout';
 import { initializeAccount, mintTo, TOKEN_PROGRAM_ID } from './token';
 
 /**
@@ -154,8 +155,11 @@ export const initLoan = async (params: InitLoanParams): Promise<Result<Transacti
       SystemProgram.createAccount({
         fromPubkey: wallet.publicKey,
         newAccountPubkey: loanAccount.publicKey,
-        lamports: await connection.getMinimumBalanceForRentExemption(302, SINGLE_GOSSIP),
-        space: 302,
+        lamports: await connection.getMinimumBalanceForRentExemption(
+          LOAN_ACCOUNT_DATA_LAYOUT.span,
+          SINGLE_GOSSIP
+        ),
+        space: LOAN_ACCOUNT_DATA_LAYOUT.span,
         programId: loanProgramIdKey,
       })
     );
