@@ -3,6 +3,7 @@ export const TESTNET = 'https://testnet.solana.com';
 export const LOCALNET = 'http://localhost:8899';
 export const WALLET = 'wallet';
 export const CONNECT = 'connect';
+export const CONNECTION = 'connection';
 export const DISCONNECT = 'disconnect';
 export const SINGLE = 'single';
 export const SINGLE_GOSSIP = 'singleGossip';
