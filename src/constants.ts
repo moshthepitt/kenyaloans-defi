@@ -13,3 +13,7 @@ export const MAX = 'max';
 export const LOAN = 'loan';
 
 export const URL_LOANS = '/loans';
+export const URL_APPLY = '/apply';
+export const URL_GUARANTEE = '/guarantee';
+export const URL_ACCEPT = '/accept';
+export const URL_REPAY = '/repay';
