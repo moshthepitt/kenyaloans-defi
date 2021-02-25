@@ -11,3 +11,5 @@ export const BASE10 = 10;
 export const TIMEOUT = 1000;
 export const MAX = 'max';
 export const LOAN = 'loan';
+
+export const URL_LOANS = '/loans';
