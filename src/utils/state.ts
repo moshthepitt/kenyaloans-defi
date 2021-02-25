@@ -1,5 +1,7 @@
 import { createStore } from 'react-hooks-global-state';
-import { CONNECT, DISCONNECT, WALLET_PROVIDER_URL } from '../constants';
+import { Connection } from '@solana/web3.js';
+import { SOLANA_NETWORK_URL } from '../env';
+import { CONNECT, DISCONNECT, SINGLE_GOSSIP, WALLET_PROVIDER_URL } from '../constants';
 
 /* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-explicit-any */
 const sol_adapter: any = require('@project-serum/sol-wallet-adapter');
@@ -10,7 +12,8 @@ const walletAdapter = new Wallet(WALLET_PROVIDER_URL);
 
 export type WalletType = typeof Wallet;
 
-interface WalletState {
+interface State {
+  connection: Connection;
   wallet: WalletType;
 }
 
@@ -19,7 +22,7 @@ interface WalletAction {
   type: string;
 }
 
-export const reducer = (state: WalletState, action: WalletAction): WalletState => {
+export const reducer = (state: State, action: WalletAction): State => {
   switch (action.type) {
     case CONNECT:
       return { ...state, wallet: action.payload };
@@ -30,7 +33,10 @@ export const reducer = (state: WalletState, action: WalletAction): WalletState =
   }
 };
 
-const initialState = { wallet: walletAdapter };
+const initialState = {
+  connection: new Connection(SOLANA_NETWORK_URL, SINGLE_GOSSIP),
+  wallet: walletAdapter,
+};
 const { dispatch, useGlobalState } = createStore(reducer, initialState);
 
 export { dispatch, useGlobalState };
