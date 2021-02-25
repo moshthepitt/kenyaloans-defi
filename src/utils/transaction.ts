@@ -10,7 +10,7 @@ import {
 } from '@solana/web3.js';
 import { AccountLayout } from '@solana/spl-token';
 import BN from 'bn.js';
-import type { WalletType } from '../components/Wallet';
+import type { WalletType } from './state';
 import { LE, LOAN, MAX, SINGLE, SINGLE_GOSSIP } from '../constants';
 import { success, failure } from './types';
 import type { Result } from './types';

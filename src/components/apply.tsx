@@ -1,10 +1,10 @@
 import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { useWalletGlobalState } from './Wallet';
+import { useGlobalState } from '../utils/state';
 import { WALLET } from '../constants';
 
 const Apply = (): JSX.Element => {
-  const [wallet] = useWalletGlobalState(WALLET);
+  const [wallet] = useGlobalState(WALLET);
 
   return (
     <div>

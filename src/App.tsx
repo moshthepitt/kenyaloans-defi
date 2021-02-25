@@ -35,15 +35,8 @@ import { unpackLoan } from './utils/transform';
 import { getLoanAccounts } from './utils/api';
 import BN from 'bn.js';
 import { initializeAccount } from './utils/token';
-import {
-  Accept,
-  Apply,
-  Guarantee,
-  Loans,
-  Repay,
-  useWalletGlobalState,
-  WalletConnection,
-} from './components';
+import { useGlobalState } from './utils/state';
+import { Accept, Apply, Guarantee, Loans, Repay, WalletConnection } from './components';
 
 import '@blueprintjs/core/lib/css/blueprint.css';
 import 'milligram/dist/milligram.css';
@@ -52,7 +45,7 @@ import 'milligram/dist/milligram.css';
  * Main app
  */
 export default function App(): JSX.Element {
-  const [wallet] = useWalletGlobalState(WALLET);
+  const [wallet] = useGlobalState(WALLET);
 
   const connection = new Connection(SOLANA_NETWORK_URL, SINGLE_GOSSIP);
 
