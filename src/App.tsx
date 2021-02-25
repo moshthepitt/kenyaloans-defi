@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, Route, Switch } from 'react-router-dom';
 import { Alignment, Button, ButtonGroup, Navbar } from '@blueprintjs/core';
 import {
+  CONNECTION,
   WALLET,
   SINGLE_GOSSIP,
   LOCALNET,
@@ -46,8 +47,9 @@ import 'milligram/dist/milligram.css';
  */
 export default function App(): JSX.Element {
   const [wallet] = useGlobalState(WALLET);
+  const [connection] = useGlobalState(CONNECTION);
 
-  const connection = new Connection(SOLANA_NETWORK_URL, SINGLE_GOSSIP);
+  // const connection = new Connection(SOLANA_NETWORK_URL, SINGLE_GOSSIP);
 
   // useEffect(() => {
   //   if (wallet && wallet._publicKey) {
@@ -194,10 +196,7 @@ export default function App(): JSX.Element {
                 <Repay />
               </Route>
               <Route path={URL_LOANS}>
-                <Loans
-                  connection={connection}
-                  loanProgramId="7TfVHJ5koeLu98c6q8sUuoinP52VUeUJNcG8UAkTHdhD"
-                />
+                <Loans loanProgramId="7TfVHJ5koeLu98c6q8sUuoinP52VUeUJNcG8UAkTHdhD" />
               </Route>
             </Switch>
           </div>
