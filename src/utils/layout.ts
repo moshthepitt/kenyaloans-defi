@@ -10,6 +10,15 @@ const publicKey = (property = 'publicKey') => {
 };
 
 /**
+ * Layout for am optiona; public key
+ *
+ * @param property - the property name
+ */
+const optionalPublicKey = (property = 'optionalPublicKey') => {
+  return BufferLayout.blob(36, property);
+};
+
+/**
  * Layout for a 64bit unsigned value
  *
  * @param property - the property name
@@ -22,12 +31,13 @@ export const LOAN_ACCOUNT_DATA_LAYOUT = BufferLayout.struct([
   BufferLayout.u8('isInitialized'),
   BufferLayout.u8('status'),
   publicKey('initializerPubkey'),
-  publicKey('initializerTempTokenAccountPubkey'),
+  publicKey('applicationFeeAccountPubkey'),
   publicKey('initializerReceiveLoanPubkey'),
-  publicKey('guarantorPubkey'),
-  publicKey('collateralAccountPubkey'),
-  publicKey('lenderPubkey'),
-  publicKey('lenderLoanRepaymentPubkey'),
+  optionalPublicKey('guarantorPubkey'),
+  optionalPublicKey('guarantorRepaymentAccountPubkey'),
+  optionalPublicKey('collateralAccountPubkey'),
+  optionalPublicKey('lenderPubkey'),
+  optionalPublicKey('lenderRepaymentPubkey'),
   uint64('expectedAmount'),
   uint64('amount'),
   BufferLayout.u32('interestRate'),
@@ -38,26 +48,32 @@ export interface LoanLayout {
   isInitialized: number;
   status: number;
   initializerPubkey: Uint8Array;
-  initializerTempTokenAccountPubkey: Uint8Array;
+  applicationFeeAccountPubkey: Uint8Array;
   initializerReceiveLoanPubkey: Uint8Array;
-  loanAccountPubkey: Uint8Array;
-  guarantorPubkey?: Uint8Array;
-  collateralAccountPubkey?: Uint8Array;
-  lenderPubkey?: Uint8Array;
-  lenderLoanRepaymentPubkey?: Uint8Array;
+  guarantorPubkey: Uint8Array;
+  guarantorRepaymentAccountPubkey: Uint8Array;
+  collateralAccountPubkey: Uint8Array;
+  lenderPubkey: Uint8Array;
+  lenderRepaymentPubkey: Uint8Array;
   expectedAmount: Uint8Array;
   amount: Uint8Array;
-  interestRate: Uint8Array;
-  duration: Uint8Array;
+  interestRate: number;
+  duration: number;
 }
 
 export interface LoanData {
   isInitialized: boolean;
   status: number;
-  initializerAccountPubkey: string;
-  initializerTempTokenAccountPubkey: string;
+  initializerPubkey: string;
+  applicationFeeAccountPubkey: string;
   initializerReceiveLoanPubkey: string;
-  loanAccountPubkey: string;
+  guarantorPubkey?: string;
+  guarantorRepaymentAccountPubkey?: string;
+  collateralAccountPubkey?: string;
+  lenderPubkey?: string;
+  lenderRepaymentPubkey?: string;
   expectedAmount: number;
   amount: number;
+  interestRate: number;
+  duration: number;
 }
