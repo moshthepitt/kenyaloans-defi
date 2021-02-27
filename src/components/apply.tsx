@@ -2,9 +2,11 @@ import React from 'react';
 import { Spinner } from '@blueprintjs/core';
 import { useQuery } from 'react-query';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { initLoan } from '../utils/transaction';
 import { getTokenAccounts } from '../utils/api';
 import { useGlobalState } from '../utils/state';
 import { CONNECTION, WALLET, TOKEN, NONE } from '../constants';
+import { PROGRAM_ID } from '../env';
 import { REQUIRED, INVALID_AMOUNT, CONNECT_TO_WALLET } from '../lang';
 
 const Apply = (): JSX.Element => {
@@ -16,6 +18,10 @@ const Apply = (): JSX.Element => {
       ? async () => getTokenAccounts({ accountPublicKey: wallet.publicKey, connection })
       : async () => [];
   const { isLoading, error, data } = useQuery(TOKEN, loanQuery);
+
+  if (!PROGRAM_ID) {
+    return <span>Invalid Program ID</span>;
+  }
 
   if (!wallet || !wallet._publicKey) {
     return <span>{CONNECT_TO_WALLET}</span>;
@@ -46,9 +52,17 @@ const Apply = (): JSX.Element => {
           }
           return errors;
         }}
-        onSubmit={(values, { setSubmitting }) => {
+        onSubmit={async (values, { setSubmitting }) => {
+          const newLoanTx = await initLoan({
+            connection,
+            expectedAmount: values.amount,
+            loanProgramId: PROGRAM_ID ? PROGRAM_ID : '',
+            loanMintAccount: values.tokenAccount,
+            wallet,
+          });
+
           setTimeout(() => {
-            alert(JSON.stringify(values, null, 2));
+            alert(JSON.stringify(newLoanTx, null, 2));
             setSubmitting(false);
           }, 400);
         }}
@@ -64,7 +78,7 @@ const Apply = (): JSX.Element => {
               {data &&
                 data.length > 0 &&
                 data.map((account) => (
-                  <option key={account.id} value={account.id}>
+                  <option key={account.id} value={account.info.mint}>
                     {account.id} {'//'} {account.info.tokenAmount.uiAmount}
                   </option>
                 ))}
