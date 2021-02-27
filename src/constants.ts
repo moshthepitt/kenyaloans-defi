@@ -14,6 +14,7 @@ export const MAX = 'max';
 export const LOAN = 'loan';
 export const TOKEN = 'token';
 export const NONE = 'none';
+export const APPLICATION_FEE = 0.01;
 
 export const URL_LOANS = '/loans';
 export const URL_APPLY = '/apply';
