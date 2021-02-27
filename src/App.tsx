@@ -12,6 +12,7 @@ import {
   URL_GUARANTEE,
   URL_REPAY,
   URL_LOANS,
+  URL_MY_LOANS,
 } from './constants';
 import { PROGRAM_ID, SOLANA_NETWORK_URL } from './env';
 import {
@@ -163,9 +164,16 @@ export default function App(): JSX.Element {
       <div className="row">
         <div className="column">
           <ButtonGroup vertical={true} minimal={true}>
-            <Link to={URL_LOANS} className="bp3-button">
-              <span className="bp3-button-text">Loans</span>
-            </Link>
+            {PROGRAM_ID && wallet && wallet._publicKey && (
+              <Link to={URL_MY_LOANS} className="bp3-button">
+                <span className="bp3-button-text">My Loans</span>
+              </Link>
+            )}
+            {PROGRAM_ID && (
+              <Link to={URL_LOANS} className="bp3-button">
+                <span className="bp3-button-text">Loans</span>
+              </Link>
+            )}
             <Link to={URL_APPLY} className="bp3-button">
               <span className="bp3-button-text">Apply</span>
             </Link>
@@ -195,9 +203,16 @@ export default function App(): JSX.Element {
               <Route path={URL_REPAY}>
                 <Repay />
               </Route>
-              <Route path={URL_LOANS}>
-                <Loans loanProgramId="7TfVHJ5koeLu98c6q8sUuoinP52VUeUJNcG8UAkTHdhD" />
-              </Route>
+              {PROGRAM_ID && (
+                <Route path={URL_LOANS}>
+                  <Loans loanProgramId={PROGRAM_ID} />
+                </Route>
+              )}
+              {PROGRAM_ID && wallet && wallet._publicKey && (
+                <Route path={URL_MY_LOANS}>
+                  <Loans initializer={wallet.publicKey.toBase58()} loanProgramId={PROGRAM_ID} />
+                </Route>
+              )}
             </Switch>
           </div>
         </div>
