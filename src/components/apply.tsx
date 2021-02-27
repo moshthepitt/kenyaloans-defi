@@ -4,7 +4,8 @@ import { useQuery } from 'react-query';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { getTokenAccounts } from '../utils/api';
 import { useGlobalState } from '../utils/state';
-import { CONNECTION, WALLET, TOKEN } from '../constants';
+import { CONNECTION, WALLET, TOKEN, NONE } from '../constants';
+import { REQUIRED, INVALID_AMOUNT, CONNECT_TO_WALLET } from '../lang';
 
 const Apply = (): JSX.Element => {
   const [wallet] = useGlobalState(WALLET);
@@ -17,7 +18,7 @@ const Apply = (): JSX.Element => {
   const { isLoading, error, data } = useQuery(TOKEN, loanQuery);
 
   if (!wallet || !wallet._publicKey) {
-    return <span>Please connect to wallet.</span>;
+    return <span>{CONNECT_TO_WALLET}</span>;
   }
 
   if (isLoading) {
@@ -32,16 +33,16 @@ const Apply = (): JSX.Element => {
     <div>
       <h3 className="bp3-heading">Apply For Loan</h3>
       <Formik
-        initialValues={{ amount: 100, tokenAccount: 'none' }}
+        initialValues={{ amount: 100, tokenAccount: NONE }}
         validate={(values) => {
           const errors: { amount?: string; tokenAccount?: string } = {};
           if (!values.amount) {
-            errors.amount = 'Required';
+            errors.amount = REQUIRED;
           } else if (values.amount < 100) {
-            errors.amount = 'Invalid amount';
+            errors.amount = INVALID_AMOUNT;
           }
-          if (!values.tokenAccount || values.tokenAccount == 'none') {
-            errors.tokenAccount = 'Required';
+          if (!values.tokenAccount || values.tokenAccount == NONE) {
+            errors.tokenAccount = REQUIRED;
           }
           return errors;
         }}
@@ -77,7 +78,7 @@ const Apply = (): JSX.Element => {
             >
               Submit
             </button>
-            {(!wallet || !wallet._publicKey) && <p>Please connect your wallet</p>}
+            {(!wallet || !wallet._publicKey) && <p>{CONNECT_TO_WALLET}</p>}
           </Form>
         )}
       </Formik>

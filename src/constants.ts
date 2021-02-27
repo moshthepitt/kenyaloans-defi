@@ -13,6 +13,7 @@ export const TIMEOUT = 1000;
 export const MAX = 'max';
 export const LOAN = 'loan';
 export const TOKEN = 'token';
+export const NONE = 'none';
 
 export const URL_LOANS = '/loans';
 export const URL_APPLY = '/apply';
