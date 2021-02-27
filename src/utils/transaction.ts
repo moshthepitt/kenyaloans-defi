@@ -11,7 +11,7 @@ import {
 import { AccountLayout } from '@solana/spl-token';
 import BN from 'bn.js';
 import type { WalletType } from './state';
-import { LE, LOAN, MAX, SINGLE, SINGLE_GOSSIP } from '../constants';
+import { APPLICATION_FEE, LE, LOAN, MAX, SINGLE, SINGLE_GOSSIP } from '../constants';
 import { success, failure } from './types';
 import type { Result } from './types';
 import { LOAN_ACCOUNT_DATA_LAYOUT } from './layout';
@@ -129,36 +129,56 @@ interface InitLoanParams {
   connection: Connection /** represents the current connection */;
   expectedAmount: number /** the expected loan amount */;
   loanProgramId: string /** the id of the loan program */;
-  loanApplicationAccount: string /** the token account that holds the loan application fee and to which the loan will be sent */;
-  loanReceiveAccount: string /** the token account that will receive the loan requested */;
+  loanMintAccount: string /** the mint account that represents the currency to be used */;
   wallet: WalletType /** the user wallet to sign and pay for the transaction */;
 }
 
 export const initLoan = async (params: InitLoanParams): Promise<Result<TransactionSignature>> => {
-  const {
-    connection,
-    expectedAmount,
-    wallet,
-    loanApplicationAccount,
-    loanReceiveAccount,
-    loanProgramId,
-  } = params;
-  const loanApplicationAccountKey = new PublicKey(loanApplicationAccount);
-  const loanReceiveAccountKey = new PublicKey(loanReceiveAccount);
+  const { connection, expectedAmount, wallet, loanMintAccount, loanProgramId } = params;
+  const loanMintAccountKey = new PublicKey(loanMintAccount);
   const loanProgramIdKey = new PublicKey(loanProgramId);
   const transaction = new Transaction();
 
+  // create the token account that will receive the loan if approved
+  const loanReceiveAccount = new Account();
+  try {
+    transaction.add(
+      SystemProgram.createAccount({
+        fromPubkey: wallet.publicKey,
+        newAccountPubkey: loanReceiveAccount.publicKey,
+        lamports: await connection.getMinimumBalanceForRentExemption(
+          AccountLayout.span,
+          SINGLE_GOSSIP
+        ),
+        space: AccountLayout.span,
+        programId: TOKEN_PROGRAM_ID,
+      })
+    );
+  } catch (error) {
+    return failure(error);
+  }
+  transaction.add(
+    initializeAccount({
+      account: loanReceiveAccount.publicKey,
+      mint: loanMintAccountKey,
+      owner: wallet.publicKey,
+    })
+  );
+  const signers: Account[] = [loanReceiveAccount];
+
   // create loan account and make the program the owner
   const loanAccount = new Account();
+  const applicationFee = APPLICATION_FEE * expectedAmount;
   try {
     transaction.add(
       SystemProgram.createAccount({
         fromPubkey: wallet.publicKey,
         newAccountPubkey: loanAccount.publicKey,
-        lamports: await connection.getMinimumBalanceForRentExemption(
-          LOAN_ACCOUNT_DATA_LAYOUT.span,
-          SINGLE_GOSSIP
-        ),
+        lamports:
+          (await connection.getMinimumBalanceForRentExemption(
+            LOAN_ACCOUNT_DATA_LAYOUT.span,
+            SINGLE_GOSSIP
+          )) + applicationFee,
         space: LOAN_ACCOUNT_DATA_LAYOUT.span,
         programId: loanProgramIdKey,
       })
@@ -166,15 +186,16 @@ export const initLoan = async (params: InitLoanParams): Promise<Result<Transacti
   } catch (error) {
     return failure(error);
   }
-
+  signers.push(loanAccount);
+  // this is the actual init loan transaction
   try {
     transaction.add(
       new TransactionInstruction({
         programId: loanProgramIdKey,
         keys: [
           { pubkey: wallet.publicKey, isSigner: true, isWritable: false },
-          { pubkey: loanApplicationAccountKey, isSigner: false, isWritable: true },
-          { pubkey: loanReceiveAccountKey, isSigner: false, isWritable: false },
+          { pubkey: loanMintAccountKey, isSigner: false, isWritable: true },
+          { pubkey: loanReceiveAccount.publicKey, isSigner: false, isWritable: false },
           { pubkey: loanAccount.publicKey, isSigner: false, isWritable: true },
           { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
           { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
@@ -185,8 +206,6 @@ export const initLoan = async (params: InitLoanParams): Promise<Result<Transacti
   } catch (error) {
     return failure(error);
   }
-
-  const signers: Account[] = [loanAccount];
 
   return await signAndSendTransaction(connection, transaction, wallet, signers);
 };
