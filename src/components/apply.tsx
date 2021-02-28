@@ -1,17 +1,20 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 import { Spinner } from '@blueprintjs/core';
 import { useQuery } from 'react-query';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { initLoan } from '../utils/transaction';
 import { getTokenAccounts } from '../utils/api';
 import { useGlobalState } from '../utils/state';
-import { CONNECTION, WALLET, TOKEN, NONE } from '../constants';
+import { CONNECTION, WALLET, TOKEN, NONE, URL_MY_LOANS } from '../constants';
 import { PROGRAM_ID } from '../env';
 import { REQUIRED, INVALID_AMOUNT, CONNECT_TO_WALLET } from '../lang';
+import { AppToaster } from './toast';
 
 const Apply = (): JSX.Element => {
   const [wallet] = useGlobalState(WALLET);
   const [connection] = useGlobalState(CONNECTION);
+  const [ifDoneHere, setIfDoneHere] = React.useState<boolean>(false);
 
   const loanQuery =
     wallet && wallet._publicKey
@@ -37,6 +40,7 @@ const Apply = (): JSX.Element => {
 
   return (
     <div>
+      {ifDoneHere && <Redirect to={URL_MY_LOANS} />}
       <h3 className="bp3-heading">Apply For Loan</h3>
       <Formik
         initialValues={{ amount: 100, tokenAccount: NONE }}
@@ -53,18 +57,16 @@ const Apply = (): JSX.Element => {
           return errors;
         }}
         onSubmit={async (values, { setSubmitting }) => {
-          const newLoanTx = await initLoan({
+          await initLoan({
             connection,
             expectedAmount: values.amount,
             loanProgramId: PROGRAM_ID ? PROGRAM_ID : '',
             loanMintAccount: values.tokenAccount,
             wallet,
           });
-
-          setTimeout(() => {
-            alert(JSON.stringify(newLoanTx, null, 2));
-            setSubmitting(false);
-          }, 400);
+          AppToaster.show({ message: 'Success!' });
+          setSubmitting(false);
+          setIfDoneHere(true);
         }}
       >
         {({ isSubmitting, errors }) => (
