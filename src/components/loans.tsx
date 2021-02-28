@@ -11,17 +11,25 @@ interface Props {
   initializer?: string;
 }
 
+export enum LoanStatus {
+  Pending = 0,
+  Initialized = 1,
+  Guaranteed = 2,
+  Accepted = 3,
+  Repaid = 4,
+}
+
 export const getStatusForUI = (status: number): string => {
   switch (status) {
-    case 0:
+    case LoanStatus.Pending:
       return 'Pending';
-    case 1:
+    case LoanStatus.Initialized:
       return 'Initialized';
-    case 2:
+    case LoanStatus.Guaranteed:
       return 'Guaranteed';
-    case 3:
+    case LoanStatus.Accepted:
       return 'Accepted';
-    case 4:
+    case LoanStatus.Repaid:
       return 'Repaid';
     default:
       return 'Invalid';

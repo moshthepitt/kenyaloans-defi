@@ -10,7 +10,7 @@ import { useGlobalState } from '../utils/state';
 import { CONNECTION, WALLET, LOAN, TOKEN, NONE, URL_MY_LOANS } from '../constants';
 import { CONNECT_TO_WALLET, REQUIRED } from '../lang';
 import { PROGRAM_ID } from '../env';
-import { getStatusForUI } from './loans';
+import { LoanStatus, getStatusForUI } from './loans';
 import { AppToaster } from './toast';
 
 const Guarantee = (): JSX.Element => {
@@ -63,7 +63,7 @@ const Guarantee = (): JSX.Element => {
       {ifDoneHere && <Redirect to={URL_MY_LOANS} />}
       <Card>
         <H3>Guarantee Loan</H3>
-        {loan.status === 1 && (
+        {loan.status === LoanStatus.Initialized && (
           <p>Please confirm that you want to provide the collateral for the this loan.</p>
         )}
         <table>
@@ -92,7 +92,7 @@ const Guarantee = (): JSX.Element => {
               <th>APR</th>
               <td>{loan.interestRate}%</td>
             </tr>
-            {loan.status !== 1 && (
+            {loan.status !== LoanStatus.Initialized && (
               <tr>
                 <th>Status</th>
                 <td>{getStatusForUI(loan.status)}</td>
@@ -100,10 +100,10 @@ const Guarantee = (): JSX.Element => {
             )}
           </tbody>
         </table>
-        {loan.status === 1 ? (
+        {loan.status === LoanStatus.Initialized ? (
           <React.Fragment>
             <Callout intent={Intent.SUCCESS}>
-              You stand to gain <strong>5%</strong> of the APR which is <strong>{gain}</strong>
+              You stand to gain <strong>50%</strong> of the APR which is <strong>{gain}</strong>
               <br />
               This will be transferred to your account as tokens of the Token ID indicated above.
             </Callout>
