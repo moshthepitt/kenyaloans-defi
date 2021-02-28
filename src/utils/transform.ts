@@ -50,7 +50,7 @@ export const unpackLoan = (input: Buffer): LoanData => {
     ...unpacked,
     isInitialized: !!unpacked.isInitialized,
     initializerPubkey: unpackPublicKey(unpacked.initializerPubkey).toBase58(),
-    applicationFeeAccountPubkey: unpackPublicKey(unpacked.applicationFeeAccountPubkey).toBase58(),
+    loanMintPubkey: unpackPublicKey(unpacked.loanMintPubkey).toBase58(),
     initializerReceiveLoanPubkey: unpackPublicKey(unpacked.initializerReceiveLoanPubkey).toBase58(),
     guarantorPubkey,
     guarantorRepaymentAccountPubkey,
