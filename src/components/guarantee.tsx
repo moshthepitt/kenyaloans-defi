@@ -137,7 +137,7 @@ const Guarantee = (): JSX.Element => {
                   <label htmlFor="collateralAccount">Collateral Account</label>
                   <p>
                     Select a token account to use as collateral for this loan. Only accounts of the
-                    same token as the loan and with sufficient token balance are avilable below.
+                    same token as the loan and with sufficient token balance are available below.
                   </p>
                   <Field as="select" id="collateralAccount" name="collateralAccount">
                     <option value="none">--select--</option>
