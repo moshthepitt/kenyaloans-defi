@@ -56,26 +56,28 @@ const Loans = (props: Props): JSX.Element => {
   }
 
   return (
-    <HTMLTable>
-      <tbody>
-        <tr>
-          <th>ID</th>
-          <th>Amount</th>
-          <th>Duration (hours)</th>
-          <th>APR</th>
-          <th>status</th>
-        </tr>
-        {loans.map((loan) => (
-          <tr key={loan.id}>
-            <td>{loan.id}</td>
-            <td>{loan.expectedAmount}</td>
-            <td>{loan.duration}</td>
-            <td>{loan.interestRate}%</td>
-            <td>{getStatusForUI(loan.status)}</td>
+    <div className="column">
+      <HTMLTable>
+        <tbody>
+          <tr>
+            <th>ID</th>
+            <th>Amount</th>
+            <th>Duration (hours)</th>
+            <th>APR</th>
+            <th>status</th>
           </tr>
-        ))}
-      </tbody>
-    </HTMLTable>
+          {loans.map((loan) => (
+            <tr key={loan.id}>
+              <td>{loan.id}</td>
+              <td>{loan.expectedAmount}</td>
+              <td>{loan.duration}</td>
+              <td>{loan.interestRate}%</td>
+              <td>{getStatusForUI(loan.status)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </HTMLTable>
+    </div>
   );
 };
 
