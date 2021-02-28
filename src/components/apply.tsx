@@ -16,11 +16,11 @@ const Apply = (): JSX.Element => {
   const [connection] = useGlobalState(CONNECTION);
   const [ifDoneHere, setIfDoneHere] = React.useState<boolean>(false);
 
-  const loanQuery =
+  const tokenQuery =
     wallet && wallet._publicKey
       ? async () => getTokenAccounts({ accountPublicKey: wallet.publicKey, connection })
       : async () => [];
-  const { isLoading, error, data } = useQuery(TOKEN, loanQuery);
+  const { isLoading, error, data } = useQuery(TOKEN, tokenQuery);
 
   if (!PROGRAM_ID) {
     return <span>Invalid Program ID</span>;
