@@ -289,9 +289,9 @@ interface AcceptLoanParams {
   borrowerReceiveAccount: string /** the token account that will receive the loan requested */;
   connection: Connection /** represents the current connection */;
   lenderFundsAccount: string /** the token account that holds the loan */;
-  lenderRepaymentAccount: string /** the token account where repayment will be sent */;
   loanAccount: string /** the loan account */;
   loanProgramId: string /** the id of the loan program */;
+  loanMintAccount: string /** the mint account that represents the currency to be used */;
   wallet: WalletType /** the user wallet to sign and pay for the transaction */;
 }
 
@@ -302,7 +302,7 @@ export const acceptLoan = async (
     borrowerReceiveAccount,
     connection,
     lenderFundsAccount,
-    lenderRepaymentAccount,
+    loanMintAccount,
     loanAccount,
     loanProgramId,
     wallet,
@@ -310,9 +310,36 @@ export const acceptLoan = async (
   const loanAccountKey = new PublicKey(loanAccount);
   const borrowerReceiveAccountKey = new PublicKey(borrowerReceiveAccount);
   const lenderFundsAccountKey = new PublicKey(lenderFundsAccount);
-  const lenderRepaymentAccountKey = new PublicKey(lenderRepaymentAccount);
+  const loanMintAccountKey = new PublicKey(loanMintAccount);
   const loanProgramIdKey = new PublicKey(loanProgramId);
   const transaction = new Transaction();
+
+  // create the token account that will receive the loan repayment
+  const lenderRepaymentAccount = new Account();
+  try {
+    transaction.add(
+      SystemProgram.createAccount({
+        fromPubkey: wallet.publicKey,
+        newAccountPubkey: lenderRepaymentAccount.publicKey,
+        lamports: await connection.getMinimumBalanceForRentExemption(
+          AccountLayout.span,
+          SINGLE_GOSSIP
+        ),
+        space: AccountLayout.span,
+        programId: TOKEN_PROGRAM_ID,
+      })
+    );
+  } catch (error) {
+    return failure(error);
+  }
+  transaction.add(
+    initializeAccount({
+      account: lenderRepaymentAccount.publicKey,
+      mint: loanMintAccountKey,
+      owner: wallet.publicKey,
+    })
+  );
+  const signers: Account[] = [lenderRepaymentAccount];
 
   try {
     transaction.add(
@@ -321,7 +348,7 @@ export const acceptLoan = async (
         keys: [
           { pubkey: wallet.publicKey, isSigner: true, isWritable: false },
           { pubkey: lenderFundsAccountKey, isSigner: false, isWritable: true },
-          { pubkey: lenderRepaymentAccountKey, isSigner: false, isWritable: true },
+          { pubkey: lenderRepaymentAccount.publicKey, isSigner: false, isWritable: true },
           { pubkey: borrowerReceiveAccountKey, isSigner: false, isWritable: true },
           { pubkey: loanAccountKey, isSigner: false, isWritable: true },
           { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
@@ -333,8 +360,6 @@ export const acceptLoan = async (
   } catch (error) {
     return failure(error);
   }
-
-  const signers: Account[] = [];
 
   return await signAndSendTransaction(connection, transaction, wallet, signers);
 };
