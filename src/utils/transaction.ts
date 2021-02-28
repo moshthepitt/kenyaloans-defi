@@ -212,7 +212,7 @@ export const initLoan = async (params: InitLoanParams): Promise<Result<Transacti
 
 interface GuaranteeLoanParams {
   connection: Connection /** represents the current connection */;
-  guarantorTokenAccount: string /** the token account to which the guarantor will receive payment */;
+  loanMintAccount: string /** the mint account that represents the currency to be used */;
   loanAccount: string /** the loan account */;
   loanCollateralAccount: string /** the token account that holds the loan collateral */;
   loanProgramId: string /** the id of the loan program */;
@@ -224,17 +224,44 @@ export const guaranteeLoan = async (
 ): Promise<Result<TransactionSignature>> => {
   const {
     connection,
-    guarantorTokenAccount,
+    loanMintAccount,
     loanAccount,
     loanCollateralAccount,
     loanProgramId,
     wallet,
   } = params;
   const loanAccountKey = new PublicKey(loanAccount);
-  const guarantorTokenAccountKey = new PublicKey(guarantorTokenAccount);
+  const loanMintAccountKey = new PublicKey(loanMintAccount);
   const loanCollateralAccountKey = new PublicKey(loanCollateralAccount);
   const loanProgramIdKey = new PublicKey(loanProgramId);
   const transaction = new Transaction();
+
+  // create the token account that will receive the loan repayment
+  const guarantorTokenAccount = new Account();
+  try {
+    transaction.add(
+      SystemProgram.createAccount({
+        fromPubkey: wallet.publicKey,
+        newAccountPubkey: guarantorTokenAccount.publicKey,
+        lamports: await connection.getMinimumBalanceForRentExemption(
+          AccountLayout.span,
+          SINGLE_GOSSIP
+        ),
+        space: AccountLayout.span,
+        programId: TOKEN_PROGRAM_ID,
+      })
+    );
+  } catch (error) {
+    return failure(error);
+  }
+  transaction.add(
+    initializeAccount({
+      account: guarantorTokenAccount.publicKey,
+      mint: loanMintAccountKey,
+      owner: wallet.publicKey,
+    })
+  );
+  const signers: Account[] = [guarantorTokenAccount];
 
   try {
     transaction.add(
@@ -243,7 +270,7 @@ export const guaranteeLoan = async (
         keys: [
           { pubkey: wallet.publicKey, isSigner: true, isWritable: false },
           { pubkey: loanCollateralAccountKey, isSigner: false, isWritable: true },
-          { pubkey: guarantorTokenAccountKey, isSigner: false, isWritable: true },
+          { pubkey: guarantorTokenAccount.publicKey, isSigner: false, isWritable: true },
           { pubkey: loanAccountKey, isSigner: false, isWritable: true },
           { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
           { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
@@ -254,8 +281,6 @@ export const guaranteeLoan = async (
   } catch (error) {
     return failure(error);
   }
-
-  const signers: Account[] = [];
 
   return await signAndSendTransaction(connection, transaction, wallet, signers);
 };
