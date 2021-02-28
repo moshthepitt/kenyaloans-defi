@@ -39,7 +39,7 @@ const Apply = (): JSX.Element => {
   }
 
   return (
-    <div>
+    <div className="column">
       {ifDoneHere && <Redirect to={URL_MY_LOANS} />}
       <h3 className="bp3-heading">Apply For Loan</h3>
       <Formik
