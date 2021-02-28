@@ -31,7 +31,7 @@ export const LOAN_ACCOUNT_DATA_LAYOUT = BufferLayout.struct([
   BufferLayout.u8('isInitialized'),
   BufferLayout.u8('status'),
   publicKey('initializerPubkey'),
-  publicKey('applicationFeeAccountPubkey'),
+  publicKey('loanMintPubkey'),
   publicKey('initializerReceiveLoanPubkey'),
   optionalPublicKey('guarantorPubkey'),
   optionalPublicKey('guarantorRepaymentAccountPubkey'),
@@ -48,7 +48,7 @@ export interface LoanLayout {
   isInitialized: number;
   status: number;
   initializerPubkey: Uint8Array;
-  applicationFeeAccountPubkey: Uint8Array;
+  loanMintPubkey: Uint8Array;
   initializerReceiveLoanPubkey: Uint8Array;
   guarantorPubkey: Uint8Array;
   guarantorRepaymentAccountPubkey: Uint8Array;
@@ -65,7 +65,7 @@ export interface LoanData {
   isInitialized: boolean;
   status: number;
   initializerPubkey: string;
-  applicationFeeAccountPubkey: string;
+  loanMintPubkey: string;
   initializerReceiveLoanPubkey: string;
   guarantorPubkey?: string;
   guarantorRepaymentAccountPubkey?: string;
