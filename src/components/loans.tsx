@@ -11,6 +11,23 @@ interface Props {
   initializer?: string;
 }
 
+export const getStatusForUI = (status: number): string => {
+  switch (status) {
+    case 0:
+      return 'Pending';
+    case 1:
+      return 'Initialized';
+    case 2:
+      return 'Guaranteed';
+    case 3:
+      return 'Accepted';
+    case 4:
+      return 'Repaid';
+    default:
+      return 'Invalid';
+  }
+};
+
 const Loans = (props: Props): JSX.Element => {
   const { initializer } = props;
   const [connection] = useGlobalState(CONNECTION);
@@ -29,23 +46,6 @@ const Loans = (props: Props): JSX.Element => {
   if (initializer) {
     loans = loans.filter((item) => item.initializerPubkey === initializer);
   }
-
-  const getStatusForUI = (status: number) => {
-    switch (status) {
-      case 0:
-        return 'Pending';
-      case 1:
-        return 'Initialized';
-      case 2:
-        return 'Guaranteed';
-      case 3:
-        return 'Accepted';
-      case 4:
-        return 'Repaid';
-      default:
-        return 'Invalid';
-    }
-  };
 
   return (
     <HTMLTable>
