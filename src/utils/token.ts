@@ -87,3 +87,33 @@ export function mintTo(params: MintToParams): TransactionInstruction {
     programId: TOKEN_PROGRAM_ID,
   });
 }
+
+interface InitializeMintParams {
+  mint: PublicKey;
+  decimals: number;
+  mintAuthority: PublicKey;
+  freezeAuthority: PublicKey;
+}
+
+/**
+ * @param params - the parameters to be used for the instruction
+ */
+export function initializeMint(params: InitializeMintParams): TransactionInstruction {
+  const { mint, decimals, mintAuthority, freezeAuthority } = params;
+  const keys = [
+    { pubkey: mint, isSigner: false, isWritable: true },
+    { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
+  ];
+  return new TransactionInstruction({
+    keys,
+    data: encodeTokenInstructionData({
+      initializeMint: {
+        decimals,
+        mintAuthority: mintAuthority.toBuffer(),
+        freezeAuthorityOption: !!freezeAuthority,
+        freezeAuthority: freezeAuthority.toBuffer(),
+      },
+    }),
+    programId: TOKEN_PROGRAM_ID,
+  });
+}
