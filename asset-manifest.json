@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/kenyaloans-defi/static/css/main.6dea0f05.chunk.css",
+    "main.js": "/kenyaloans-defi/static/js/main.28e029a3.chunk.js",
+    "main.js.map": "/kenyaloans-defi/static/js/main.28e029a3.chunk.js.map",
+    "runtime-main.js": "/kenyaloans-defi/static/js/runtime-main.4f1093b3.js",
+    "runtime-main.js.map": "/kenyaloans-defi/static/js/runtime-main.4f1093b3.js.map",
+    "static/css/2.b6bcf602.chunk.css": "/kenyaloans-defi/static/css/2.b6bcf602.chunk.css",
+    "static/js/2.3d87fffa.chunk.js": "/kenyaloans-defi/static/js/2.3d87fffa.chunk.js",
+    "static/js/2.3d87fffa.chunk.js.map": "/kenyaloans-defi/static/js/2.3d87fffa.chunk.js.map",
+    "static/js/3.784ace18.chunk.js": "/kenyaloans-defi/static/js/3.784ace18.chunk.js",
+    "static/js/3.784ace18.chunk.js.map": "/kenyaloans-defi/static/js/3.784ace18.chunk.js.map",
+    "index.html": "/kenyaloans-defi/index.html",
+    "static/css/2.b6bcf602.chunk.css.map": "/kenyaloans-defi/static/css/2.b6bcf602.chunk.css.map",
+    "static/css/main.6dea0f05.chunk.css.map": "/kenyaloans-defi/static/css/main.6dea0f05.chunk.css.map",
+    "static/js/2.3d87fffa.chunk.js.LICENSE.txt": "/kenyaloans-defi/static/js/2.3d87fffa.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.4f1093b3.js",
+    "static/css/2.b6bcf602.chunk.css",
+    "static/js/2.3d87fffa.chunk.js",
+    "static/css/main.6dea0f05.chunk.css",
+    "static/js/main.28e029a3.chunk.js"
+  ]
+}
