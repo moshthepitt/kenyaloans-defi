@@ -168,7 +168,13 @@ export default function App(): JSX.Element {
   const lenderMenu = (
     <Menu>
       <Link to={URL_LOANS} style={{ textDecoration: 'none', display: 'block' }}>
-        <MenuItem icon="timeline-line-chart" text="Loans" />
+        <MenuItem icon="timeline-line-chart" text="All Loans" />
+      </Link>
+      <Link to={URL_GUARANTEE} style={{ textDecoration: 'none', display: 'block' }}>
+        <MenuItem icon="timeline-line-chart" text="Provide Collateral" />
+      </Link>
+      <Link to={URL_ACCEPT} style={{ textDecoration: 'none', display: 'block' }}>
+        <MenuItem icon="timeline-line-chart" text="Lend" />
       </Link>
     </Menu>
   );
@@ -193,37 +199,6 @@ export default function App(): JSX.Element {
       <div className="row">
         <div className="column">
           <ButtonGroup vertical={true} minimal={true}>
-            {/* {PROGRAM_ID && wallet && wallet._publicKey && (
-              <Link to={URL_MY_LOANS} className="bp3-button">
-                <span className="bp3-button-text">My Loans</span>
-              </Link>
-            )}
-            {PROGRAM_ID && (
-              <Link to={URL_LOANS} className="bp3-button">
-                <span className="bp3-button-text">Loans</span>
-              </Link>
-            )}
-            <Link to={URL_APPLY} className="bp3-button">
-              <span className="bp3-button-text">Apply</span>
-            </Link>
-            <Link
-              to={`${URL_GUARANTEE}/6GRcin3zDX1oTaL6srncjZyyk1yWEXMxWMinKqmvTx5v`}
-              className="bp3-button"
-            >
-              <span className="bp3-button-text">Guarantee</span>
-            </Link>
-            <Link
-              to={`${URL_ACCEPT}/82PBjGQtpYFmPSQon8USVtWy7E1wNJAtyfnbZaTbgVra`}
-              className="bp3-button"
-            >
-              <span className="bp3-button-text">Accept</span>
-            </Link>
-            <Link
-              to={`${URL_REPAY}/82PBjGQtpYFmPSQon8USVtWy7E1wNJAtyfnbZaTbgVra`}
-              className="bp3-button"
-            >
-              <span className="bp3-button-text">Repay</span>
-            </Link> */}
             <Popover2 content={borrowMenu} placement="right-end">
               <Button icon="import" text="Borrow" />
             </Popover2>
@@ -235,33 +210,49 @@ export default function App(): JSX.Element {
         <div className="column column-75">
           <div className="row">
             <Switch>
-              <Route path={`${URL_ACCEPT}/:loanId`}>
-                <Accept />
-              </Route>
               <Route path={URL_APPLY}>
                 <Apply />
               </Route>
-              <Route path={`${URL_GUARANTEE}/:loanId`}>
-                <Guarantee />
-              </Route>
-              <Route path={`${URL_REPAY}/:loanId`}>
-                <Repay />
-              </Route>
               {PROGRAM_ID && (
-                <Route path={URL_LOANS}>
-                  <Loans
-                    filters={{ excludeStatus: [LoanStatus.Repaid] }}
-                    loanProgramId={PROGRAM_ID}
-                  />
-                </Route>
+                <React.Fragment>
+                  <Route path={URL_LOANS}>
+                    <Loans
+                      filters={{ excludeStatus: [LoanStatus.Repaid] }}
+                      loanProgramId={PROGRAM_ID}
+                    />
+                  </Route>
+                  <Route path={URL_GUARANTEE}>
+                    <Loans
+                      filters={{ status: [LoanStatus.Initialized] }}
+                      loanProgramId={PROGRAM_ID}
+                    />
+                  </Route>
+                  <Route path={URL_ACCEPT}>
+                    <Loans
+                      filters={{ status: [LoanStatus.Guaranteed] }}
+                      loanProgramId={PROGRAM_ID}
+                    />
+                  </Route>
+                </React.Fragment>
               )}
               {PROGRAM_ID && wallet && wallet._publicKey && (
-                <Route path={URL_MY_LOANS}>
-                  <Loans
-                    filters={{ initializer: wallet.publicKey.toBase58() }}
-                    loanProgramId={PROGRAM_ID}
-                  />
-                </Route>
+                <React.Fragment>
+                  <Route path={URL_MY_LOANS}>
+                    <Loans
+                      filters={{ initializer: wallet.publicKey.toBase58() }}
+                      loanProgramId={PROGRAM_ID}
+                    />
+                  </Route>
+                  <Route path={`${URL_ACCEPT}/:loanId`}>
+                    <Accept />
+                  </Route>
+                  <Route path={`${URL_GUARANTEE}/:loanId`}>
+                    <Guarantee />
+                  </Route>
+                  <Route path={`${URL_REPAY}/:loanId`}>
+                    <Repay />
+                  </Route>
+                </React.Fragment>
               )}
             </Switch>
           </div>
