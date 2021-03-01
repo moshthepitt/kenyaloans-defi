@@ -5,46 +5,26 @@ import { getLoanAccounts } from '../../utils/api';
 import type { LoanAccount } from '../../utils/api';
 import { useGlobalState } from '../../utils/state';
 import { CONNECTION, LOAN } from '../../constants';
-
-export enum LoanStatus {
-  Pending = 0,
-  Initialized = 1,
-  Guaranteed = 2,
-  Accepted = 3,
-  Repaid = 4,
-}
+import { LoanStatus, getStatusForUI } from './helpers';
+export * from './accept_loans';
+export * from './guarantee_loans';
 
 interface Filters {
+  excludeStatus?: LoanStatus[];
   initializer?: string;
   status?: LoanStatus[];
-  excludeStatus?: LoanStatus[];
 }
 
 interface Props {
-  loanProgramId: string;
+  Component?: React.ElementType;
   filters?: Filters;
+  loanProgramId: string;
 }
 
-export const getStatusForUI = (status: number): string => {
-  switch (status) {
-    case LoanStatus.Pending:
-      return 'Pending';
-    case LoanStatus.Initialized:
-      return 'Initialized';
-    case LoanStatus.Guaranteed:
-      return 'Guaranteed';
-    case LoanStatus.Accepted:
-      return 'Accepted';
-    case LoanStatus.Repaid:
-      return 'Repaid';
-    default:
-      return 'Invalid';
-  }
-};
-
 const Loans = (props: Props): JSX.Element => {
+  const { Component, loanProgramId } = props;
   const [connection] = useGlobalState(CONNECTION);
-  const loanQuery = async () => getLoanAccounts({ ...props, connection });
+  const loanQuery = async () => getLoanAccounts({ loanProgramId, connection });
   const { isLoading, error, data } = useQuery(LOAN, loanQuery);
 
   const { filters } = props;
@@ -56,48 +36,51 @@ const Loans = (props: Props): JSX.Element => {
   if (error) {
     return <span>Error...</span>;
   }
-  console.log('000000000000000000');
 
   let loans: LoanAccount[] = data || [];
   if (filters) {
-    console.log('1111111111111111111');
     if (filters.initializer) {
-      console.log('22222222222222222');
       loans = loans.filter((item) => item.initializerPubkey === filters.initializer);
     }
     if (filters.status) {
-      console.log('3333333333333333');
       loans = loans.filter((item) => filters.status?.includes(item.status));
     } else if (filters.excludeStatus) {
-      console.log('444444444444444444');
       loans = loans.filter((item) => !filters.excludeStatus?.includes(item.status));
     }
   }
 
-  return (
-    <div className="column">
-      <HTMLTable>
-        <tbody>
-          <tr>
-            <th>ID</th>
-            <th>Amount</th>
-            <th>Duration (hours)</th>
-            <th>APR</th>
-            <th>status</th>
-          </tr>
-          {loans.map((loan) => (
-            <tr key={loan.id}>
-              <td>{loan.id}</td>
-              <td>{loan.expectedAmount}</td>
-              <td>{loan.duration}</td>
-              <td>{loan.interestRate}%</td>
-              <td>{getStatusForUI(loan.status)}</td>
+  if (Component) {
+    return (
+      <div className="column">
+        <Component loans={loans} />
+      </div>
+    );
+  } else {
+    return (
+      <div className="column">
+        <HTMLTable>
+          <tbody>
+            <tr>
+              <th>ID</th>
+              <th>Amount</th>
+              <th>Duration (hours)</th>
+              <th>APR</th>
+              <th>Status</th>
             </tr>
-          ))}
-        </tbody>
-      </HTMLTable>
-    </div>
-  );
+            {loans.map((loan) => (
+              <tr key={loan.id}>
+                <td>{loan.id}</td>
+                <td>{loan.expectedAmount}</td>
+                <td>{loan.duration}</td>
+                <td>{loan.interestRate}%</td>
+                <td>{getStatusForUI(loan.status)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </HTMLTable>
+      </div>
+    );
+  }
 };
 
 export { Loans };
