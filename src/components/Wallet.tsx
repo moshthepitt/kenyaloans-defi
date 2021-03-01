@@ -1,8 +1,9 @@
 import React, { useMemo } from 'react';
 import { PublicKey } from '@solana/web3.js';
 import { Button } from '@blueprintjs/core';
-import { CONNECT, DISCONNECT, TESTNET, WALLET, WALLET_PROVIDER_URL } from '../constants';
+import { CONNECT, DISCONNECT, WALLET, WALLET_PROVIDER_URL } from '../constants';
 import { dispatch, useGlobalState, Wallet } from '../utils/state';
+import { SOLANA_NETWORK_URL } from '../env';
 
 interface ConnectionProps {
   network: string;
@@ -55,7 +56,7 @@ export const WalletConnection = (props: ConnectionProps): JSX.Element => {
 };
 
 const defaultProps: ConnectionProps = {
-  network: TESTNET,
+  network: SOLANA_NETWORK_URL,
 };
 
 WalletConnection.defaultProps = defaultProps;
