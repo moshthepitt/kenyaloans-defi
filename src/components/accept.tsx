@@ -7,7 +7,7 @@ import { useQuery } from 'react-query';
 import { acceptLoan } from '../utils/transaction';
 import { getLoanAccounts, getTokenAccounts } from '../utils/api';
 import { useGlobalState } from '../utils/state';
-import { CONNECTION, WALLET, LOAN, TOKEN, NONE, URL_MY_LOANS } from '../constants';
+import { CONNECTION, WALLET, LOAN, TOKEN, NONE, URL_INVESTMENTS } from '../constants';
 import { CONNECT_TO_WALLET, REQUIRED } from '../lang';
 import { PROGRAM_ID } from '../env';
 import { LoanStatus, getStatusForUI } from './loans/helpers';
@@ -60,7 +60,7 @@ const Accept = (): JSX.Element => {
 
   return (
     <div className="column">
-      {ifDoneHere && <Redirect to={URL_MY_LOANS} />}
+      {ifDoneHere && <Redirect to={URL_INVESTMENTS} />}
       <Card>
         <H3>Lend Money</H3>
         {loan.status === LoanStatus.Guaranteed && (
