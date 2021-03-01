@@ -135,7 +135,7 @@ const Repay = (): JSX.Element => {
                 return errors;
               }}
               onSubmit={async (values, { setSubmitting }) => {
-                await repayLoan({
+                const result = await repayLoan({
                   collateralTokenAccount: loan.collateralAccountPubkey || '',
                   connection,
                   guarantorAccount: loan.guarantorPubkey || '',
@@ -147,11 +147,15 @@ const Repay = (): JSX.Element => {
                   payerTokenAccount: values.loanRepaymentAccount,
                   wallet,
                 });
-                AppToaster.show({
-                  message: 'Success! Please wait up to 30 seconds for changes to take place.',
-                });
                 setSubmitting(false);
-                setIfDoneHere(true);
+                if (result.error) {
+                  AppToaster.show({ message: `Error: ${result.error.message}` });
+                } else {
+                  AppToaster.show({
+                    message: 'Success! Please wait up to 30 seconds for changes to take place.',
+                  });
+                  setIfDoneHere(true);
+                }
               }}
             >
               {({ isSubmitting, errors }) => (

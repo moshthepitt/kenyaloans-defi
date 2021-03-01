@@ -126,7 +126,7 @@ const Accept = (): JSX.Element => {
                 return errors;
               }}
               onSubmit={async (values, { setSubmitting }) => {
-                await acceptLoan({
+                const result = await acceptLoan({
                   connection,
                   borrowerReceiveAccount: loan.initializerReceiveLoanPubkey,
                   lenderFundsAccount: values.lenderFundsAccount,
@@ -135,11 +135,15 @@ const Accept = (): JSX.Element => {
                   loanMintAccount: loan.loanMintPubkey,
                   wallet,
                 });
-                AppToaster.show({
-                  message: 'Success! Please wait up to 30 seconds for changes to take place.',
-                });
                 setSubmitting(false);
-                setIfDoneHere(true);
+                if (result.error) {
+                  AppToaster.show({ message: `Error: ${result.error.message}` });
+                } else {
+                  AppToaster.show({
+                    message: 'Success! Please wait up to 30 seconds for changes to take place.',
+                  });
+                  setIfDoneHere(true);
+                }
               }}
             >
               {({ isSubmitting, errors }) => (

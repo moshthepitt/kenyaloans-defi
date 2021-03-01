@@ -67,18 +67,22 @@ const Apply = (): JSX.Element => {
           return errors;
         }}
         onSubmit={async (values, { setSubmitting }) => {
-          await initLoan({
+          const result = await initLoan({
             connection,
             expectedAmount: values.amount,
             loanProgramId: PROGRAM_ID ? PROGRAM_ID : '',
             loanMintAccount: values.tokenAccount,
             wallet,
           });
-          AppToaster.show({
-            message: 'Success! Please wait up to 30 seconds for changes to take place.',
-          });
           setSubmitting(false);
-          setIfDoneHere(true);
+          if (result.error) {
+            AppToaster.show({ message: `Error: ${result.error.message}` });
+          } else {
+            AppToaster.show({
+              message: 'Success! Please wait up to 30 seconds for changes to take place.',
+            });
+            setIfDoneHere(true);
+          }
         }}
       >
         {({ isSubmitting, errors }) => (

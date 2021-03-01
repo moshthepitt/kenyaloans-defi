@@ -122,7 +122,7 @@ const Guarantee = (): JSX.Element => {
                 return errors;
               }}
               onSubmit={async (values, { setSubmitting }) => {
-                await guaranteeLoan({
+                const result = await guaranteeLoan({
                   connection,
                   loanMintAccount: loan.loanMintPubkey,
                   loanCollateralAccount: values.collateralAccount,
@@ -130,11 +130,15 @@ const Guarantee = (): JSX.Element => {
                   loanProgramId: PROGRAM_ID ? PROGRAM_ID : '',
                   wallet,
                 });
-                AppToaster.show({
-                  message: 'Success! Please wait up to 30 seconds for changes to take place.',
-                });
                 setSubmitting(false);
-                setIfDoneHere(true);
+                if (result.error) {
+                  AppToaster.show({ message: `Error: ${result.error.message}` });
+                } else {
+                  AppToaster.show({
+                    message: 'Success! Please wait up to 30 seconds for changes to take place.',
+                  });
+                  setIfDoneHere(true);
+                }
               }}
             >
               {({ isSubmitting, errors }) => (
