@@ -1,10 +1,10 @@
 import React from 'react';
 import { Spinner, HTMLTable } from '@blueprintjs/core';
 import { useQuery } from 'react-query';
-import { getLoanAccounts } from '../utils/api';
-import type { LoanAccount } from '../utils/api';
-import { useGlobalState } from '../utils/state';
-import { CONNECTION, LOAN } from '../constants';
+import { getLoanAccounts } from '../../utils/api';
+import type { LoanAccount } from '../../utils/api';
+import { useGlobalState } from '../../utils/state';
+import { CONNECTION, LOAN } from '../../constants';
 
 export enum LoanStatus {
   Pending = 0,
@@ -56,17 +56,22 @@ const Loans = (props: Props): JSX.Element => {
   if (error) {
     return <span>Error...</span>;
   }
+  console.log('000000000000000000');
 
   let loans: LoanAccount[] = data || [];
-  if (filters && filters.initializer) {
-    loans = loans.filter((item) => item.initializerPubkey === filters.initializer);
-  }
-
-  if (filters && filters.status) {
-    loans = loans.filter((item) => filters.status?.includes(item.status));
-  }
-  if (filters && filters.excludeStatus) {
-    loans = loans.filter((item) => !filters.excludeStatus?.includes(item.status));
+  if (filters) {
+    console.log('1111111111111111111');
+    if (filters.initializer) {
+      console.log('22222222222222222');
+      loans = loans.filter((item) => item.initializerPubkey === filters.initializer);
+    }
+    if (filters.status) {
+      console.log('3333333333333333');
+      loans = loans.filter((item) => filters.status?.includes(item.status));
+    } else if (filters.excludeStatus) {
+      console.log('444444444444444444');
+      loans = loans.filter((item) => !filters.excludeStatus?.includes(item.status));
+    }
   }
 
   return (
