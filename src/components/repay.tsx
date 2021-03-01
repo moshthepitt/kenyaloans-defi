@@ -10,7 +10,7 @@ import { useGlobalState } from '../utils/state';
 import { CONNECTION, WALLET, LOAN, TOKEN, NONE, URL_MY_LOANS } from '../constants';
 import { CONNECT_TO_WALLET, REQUIRED } from '../lang';
 import { PROGRAM_ID } from '../env';
-import { LoanStatus, getStatusForUI } from './loans';
+import { LoanStatus, getStatusForUI } from './loans/helpers';
 import { AppToaster } from './toast';
 
 const Repay = (): JSX.Element => {
