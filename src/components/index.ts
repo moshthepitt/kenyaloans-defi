@@ -4,3 +4,4 @@ export * from './apply';
 export * from './guarantee';
 export * from './loans';
 export * from './repay';
+export * from './Home';

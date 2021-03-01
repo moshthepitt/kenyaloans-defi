@@ -31,7 +31,11 @@ const Repay = (): JSX.Element => {
   }
 
   if (!wallet || !wallet._publicKey) {
-    return <span>{CONNECT_TO_WALLET}</span>;
+    return (
+      <div className="column">
+        <span>{CONNECT_TO_WALLET}</span>
+      </div>
+    );
   }
 
   if (loans.isLoading || userTokens.isLoading) {
