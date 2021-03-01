@@ -147,7 +147,9 @@ const Repay = (): JSX.Element => {
                   payerTokenAccount: values.loanRepaymentAccount,
                   wallet,
                 });
-                AppToaster.show({ message: 'Success!' });
+                AppToaster.show({
+                  message: 'Success! Please wait up to 30 seconds for changes to take place.',
+                });
                 setSubmitting(false);
                 setIfDoneHere(true);
               }}

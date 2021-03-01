@@ -137,7 +137,9 @@ export const TestGen = (): JSX.Element => {
           if (result.error) {
             AppToaster.show({ message: `Error: ${result.error.message}` });
           } else {
-            AppToaster.show({ message: 'Success!' });
+            AppToaster.show({
+              message: 'Success! Please wait up to 30 seconds for changes to take place.',
+            });
             setIfDoneHere(true);
           }
         }}

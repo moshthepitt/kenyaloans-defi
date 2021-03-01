@@ -135,7 +135,9 @@ const Accept = (): JSX.Element => {
                   loanMintAccount: loan.loanMintPubkey,
                   wallet,
                 });
-                AppToaster.show({ message: 'Success!' });
+                AppToaster.show({
+                  message: 'Success! Please wait up to 30 seconds for changes to take place.',
+                });
                 setSubmitting(false);
                 setIfDoneHere(true);
               }}
