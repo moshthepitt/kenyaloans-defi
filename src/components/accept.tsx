@@ -67,7 +67,7 @@ const Accept = (): JSX.Element => {
       <Card>
         <H3>Lend Money</H3>
         {loan.status === LoanStatus.Guaranteed && (
-          <p>Please confirm that you want to accept lend for the loan with the details below.</p>
+          <p>Please confirm that you want to accept to lend for the loan with the details below.</p>
         )}
         <table>
           <tbody>
