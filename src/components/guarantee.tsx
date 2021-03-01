@@ -67,7 +67,7 @@ const Guarantee = (): JSX.Element => {
       <Card>
         <H3>Guarantee Loan</H3>
         {loan.status === LoanStatus.Initialized && (
-          <p>Please confirm that you want to provide the collateral for the this loan.</p>
+          <p>Please confirm that you want to provide the collateral for this loan.</p>
         )}
         <table>
           <tbody>
