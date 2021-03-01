@@ -1,9 +1,10 @@
 import React from 'react';
 import { Link, Route, Switch } from 'react-router-dom';
-import { Alignment, Button, ButtonGroup, Navbar, Menu, MenuItem } from '@blueprintjs/core';
+import { Alignment, Button, Navbar, Menu, MenuItem, H2 } from '@blueprintjs/core';
 import { Popover2 } from '@blueprintjs/popover2';
 import {
   WALLET,
+  URL_HOME,
   URL_INVESTMENTS,
   URL_ACCEPT,
   URL_APPLY,
@@ -21,6 +22,7 @@ import {
   Apply,
   Guarantee,
   GuaranteeLoans,
+  Home,
   Investments,
   Loans,
   MyLoans,
@@ -54,35 +56,45 @@ export default function App(): JSX.Element {
 
   const lenderMenu = (
     <Menu>
-      <Link to={URL_LOANS} style={{ textDecoration: 'none', display: 'block' }}>
-        <MenuItem icon="timeline-line-chart" text="All Loans" />
-      </Link>
       <Link to={URL_GUARANTEE} style={{ textDecoration: 'none', display: 'block' }}>
-        <MenuItem icon="timeline-line-chart" text="Provide Collateral" />
+        <MenuItem icon="export" text="Provide Collateral" />
       </Link>
       <Link to={URL_ACCEPT} style={{ textDecoration: 'none', display: 'block' }}>
-        <MenuItem icon="timeline-line-chart" text="Lend" />
+        <MenuItem icon="endorsed" text="Lend" />
       </Link>
       {wallet && wallet._publicKey && (
         <Link to={URL_INVESTMENTS} style={{ textDecoration: 'none', display: 'block' }}>
-          <MenuItem icon="timeline-line-chart" text="Investments" />
+          <MenuItem icon="timeline-line-chart" text="My Investments" />
         </Link>
       )}
+      <Link to={URL_LOANS} style={{ textDecoration: 'none', display: 'block' }}>
+        <MenuItem icon="database" text="All Loans" />
+      </Link>
     </Menu>
   );
 
   return (
-    <div className="container">
+    <div className="container" style={{ maxWidth: '720px' }}>
       <div className="row">
         <div className="column">
           <Navbar style={{ marginBottom: '2rem' }}>
             <Navbar.Group align={Alignment.LEFT}>
-              <Navbar.Heading>DeFi Loans</Navbar.Heading>
+              <Navbar.Heading>
+                <H2>
+                  <Link to={URL_HOME} style={{ textDecoration: 'none' }}>
+                    Kenya Loans
+                  </Link>
+                </H2>
+              </Navbar.Heading>
             </Navbar.Group>
             <Navbar.Group align={Alignment.RIGHT}>
-              <Button minimal={true} small={true}>
-                {SOLANA_NETWORK_URL}
-              </Button>
+              <Popover2 content={borrowMenu} placement="auto">
+                <Button icon="import" text="Borrow" minimal={true} small={true} />
+              </Popover2>
+              <Popover2 content={lenderMenu} placement="auto">
+                <Button icon="timeline-line-chart" text="Lend" minimal={true} small={true} />
+              </Popover2>
+              <span className="bp3-navbar-divider"></span>
               <WalletConnection network={SOLANA_NETWORK_URL} />
             </Navbar.Group>
           </Navbar>
@@ -90,18 +102,11 @@ export default function App(): JSX.Element {
       </div>
       <div className="row">
         <div className="column">
-          <ButtonGroup vertical={true} minimal={true}>
-            <Popover2 content={borrowMenu} placement="right-end">
-              <Button icon="import" text="Borrow" />
-            </Popover2>
-            <Popover2 content={lenderMenu} placement="right-end">
-              <Button icon="timeline-line-chart" text="Lend" />
-            </Popover2>
-          </ButtonGroup>
-        </div>
-        <div className="column column-75">
           <div className="row">
             <Switch>
+              <Route path={URL_HOME} exact={true}>
+                <Home />
+              </Route>
               <Route path={URL_FAUCET}>
                 <TestGen />
               </Route>
