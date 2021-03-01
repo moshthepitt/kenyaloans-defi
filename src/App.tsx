@@ -1,7 +1,16 @@
 /* eslint-disable no-console, no-debugger, @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
-import { Alignment, Button, ButtonGroup, Navbar } from '@blueprintjs/core';
+import {
+  Alignment,
+  Button,
+  ButtonGroup,
+  Navbar,
+  Menu,
+  MenuDivider,
+  MenuItem,
+} from '@blueprintjs/core';
+import { Popover2 } from '@blueprintjs/popover2';
 import {
   CONNECTION,
   WALLET,
@@ -38,7 +47,7 @@ import { getLoanAccounts } from './utils/api';
 import BN from 'bn.js';
 import { initializeAccount } from './utils/token';
 import { useGlobalState } from './utils/state';
-import { Accept, Apply, Guarantee, Loans, Repay, WalletConnection } from './components';
+import { Accept, Apply, Guarantee, Loans, LoanStatus, Repay, WalletConnection } from './components';
 
 import '@blueprintjs/core/lib/css/blueprint.css';
 import 'milligram/dist/milligram.css';
@@ -143,6 +152,27 @@ export default function App(): JSX.Element {
   //   }
   // }, [wallet]);
 
+  const borrowMenu = (
+    <Menu>
+      <Link to={URL_APPLY} style={{ textDecoration: 'none', display: 'block' }}>
+        <MenuItem icon="import" text="Apply" />
+      </Link>
+      {PROGRAM_ID && wallet && wallet._publicKey && (
+        <Link to={URL_MY_LOANS} style={{ textDecoration: 'none', display: 'block' }}>
+          <MenuItem icon="stacked-chart" text="My Loans" />
+        </Link>
+      )}
+    </Menu>
+  );
+
+  const lenderMenu = (
+    <Menu>
+      <Link to={URL_LOANS} style={{ textDecoration: 'none', display: 'block' }}>
+        <MenuItem icon="timeline-line-chart" text="Loans" />
+      </Link>
+    </Menu>
+  );
+
   return (
     <div className="container">
       <div className="row">
@@ -163,7 +193,7 @@ export default function App(): JSX.Element {
       <div className="row">
         <div className="column">
           <ButtonGroup vertical={true} minimal={true}>
-            {PROGRAM_ID && wallet && wallet._publicKey && (
+            {/* {PROGRAM_ID && wallet && wallet._publicKey && (
               <Link to={URL_MY_LOANS} className="bp3-button">
                 <span className="bp3-button-text">My Loans</span>
               </Link>
@@ -193,7 +223,13 @@ export default function App(): JSX.Element {
               className="bp3-button"
             >
               <span className="bp3-button-text">Repay</span>
-            </Link>
+            </Link> */}
+            <Popover2 content={borrowMenu} placement="right-end">
+              <Button icon="import" text="Borrow" />
+            </Popover2>
+            <Popover2 content={lenderMenu} placement="right-end">
+              <Button icon="timeline-line-chart" text="Lend" />
+            </Popover2>
           </ButtonGroup>
         </div>
         <div className="column column-75">
@@ -213,12 +249,18 @@ export default function App(): JSX.Element {
               </Route>
               {PROGRAM_ID && (
                 <Route path={URL_LOANS}>
-                  <Loans loanProgramId={PROGRAM_ID} />
+                  <Loans
+                    filters={{ excludeStatus: [LoanStatus.Repaid] }}
+                    loanProgramId={PROGRAM_ID}
+                  />
                 </Route>
               )}
               {PROGRAM_ID && wallet && wallet._publicKey && (
                 <Route path={URL_MY_LOANS}>
-                  <Loans initializer={wallet.publicKey.toBase58()} loanProgramId={PROGRAM_ID} />
+                  <Loans
+                    filters={{ initializer: wallet.publicKey.toBase58() }}
+                    loanProgramId={PROGRAM_ID}
+                  />
                 </Route>
               )}
             </Switch>
