@@ -47,7 +47,17 @@ import { getLoanAccounts } from './utils/api';
 import BN from 'bn.js';
 import { initializeAccount } from './utils/token';
 import { useGlobalState } from './utils/state';
-import { Accept, Apply, Guarantee, Loans, LoanStatus, Repay, WalletConnection } from './components';
+import {
+  Accept,
+  AcceptLoans,
+  Apply,
+  Guarantee,
+  GuaranteeLoans,
+  Loans,
+  Repay,
+  WalletConnection,
+} from './components';
+import { LoanStatus } from './components/loans/helpers';
 
 import '@blueprintjs/core/lib/css/blueprint.css';
 import 'milligram/dist/milligram.css';
@@ -240,12 +250,14 @@ export default function App(): JSX.Element {
                   </Route>
                   <Route path={URL_GUARANTEE}>
                     <Loans
+                      Component={GuaranteeLoans}
                       filters={{ status: [LoanStatus.Initialized] }}
                       loanProgramId={PROGRAM_ID}
                     />
                   </Route>
                   <Route path={URL_ACCEPT}>
                     <Loans
+                      Component={AcceptLoans}
                       filters={{ status: [LoanStatus.Guaranteed] }}
                       loanProgramId={PROGRAM_ID}
                     />
