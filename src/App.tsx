@@ -213,6 +213,23 @@ export default function App(): JSX.Element {
               <Route path={URL_APPLY}>
                 <Apply />
               </Route>
+              {PROGRAM_ID && wallet && wallet._publicKey && (
+                <Route path={URL_MY_LOANS}>
+                  <Loans
+                    filters={{ initializer: wallet.publicKey.toBase58() }}
+                    loanProgramId={PROGRAM_ID}
+                  />
+                </Route>
+              )}
+              <Route path={`${URL_ACCEPT}/:loanId`}>
+                <Accept />
+              </Route>
+              <Route path={`${URL_GUARANTEE}/:loanId`}>
+                <Guarantee />
+              </Route>
+              <Route path={`${URL_REPAY}/:loanId`}>
+                <Repay />
+              </Route>
               {PROGRAM_ID && (
                 <React.Fragment>
                   <Route path={URL_LOANS}>
@@ -232,25 +249,6 @@ export default function App(): JSX.Element {
                       filters={{ status: [LoanStatus.Guaranteed] }}
                       loanProgramId={PROGRAM_ID}
                     />
-                  </Route>
-                </React.Fragment>
-              )}
-              {PROGRAM_ID && wallet && wallet._publicKey && (
-                <React.Fragment>
-                  <Route path={URL_MY_LOANS}>
-                    <Loans
-                      filters={{ initializer: wallet.publicKey.toBase58() }}
-                      loanProgramId={PROGRAM_ID}
-                    />
-                  </Route>
-                  <Route path={`${URL_ACCEPT}/:loanId`}>
-                    <Accept />
-                  </Route>
-                  <Route path={`${URL_GUARANTEE}/:loanId`}>
-                    <Guarantee />
-                  </Route>
-                  <Route path={`${URL_REPAY}/:loanId`}>
-                    <Repay />
                   </Route>
                 </React.Fragment>
               )}
