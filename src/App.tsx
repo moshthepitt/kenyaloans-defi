@@ -74,7 +74,7 @@ export default function App(): JSX.Element {
   );
 
   return (
-    <div className="container" style={{ maxWidth: '720px' }}>
+    <div className="container" style={{ maxWidth: '980px' }}>
       <div className="row">
         <div className="column">
           <Navbar style={{ marginBottom: '2rem' }}>
