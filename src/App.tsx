@@ -88,7 +88,7 @@ export default function App(): JSX.Element {
               </Navbar.Heading>
             </Navbar.Group>
             <Navbar.Group align={Alignment.RIGHT}>
-              <Popover2 content={borrowMenu} placement="auto">
+              <Popover2 content={borrowMenu} placement="bottom-start">
                 <Button icon="import" text="Borrow" minimal={true} small={true} />
               </Popover2>
               <Popover2 content={lenderMenu} placement="auto">
