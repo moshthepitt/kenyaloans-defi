@@ -12,6 +12,7 @@ This project was built for the [Solana DeFi hackathon](https://solana.com/defi) 
 
 - [Kenya Loans](https://github.com/moshthepitt/kenyaloans-defi)
 - [Loans254](https://github.com/moshthepitt/loans254-program)
+- [Live Demo](https://moshthepitt.github.io/kenyaloans-defi/)
 
 ### The Problem
 
