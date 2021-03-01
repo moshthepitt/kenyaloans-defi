@@ -14,7 +14,7 @@ const AcceptLoans = (props: Props): JSX.Element => {
   const { loans } = props;
   const [wallet] = useGlobalState(WALLET);
   return (
-    <div className="guarantee">
+    <div className="accept">
       <H3>Lend Funds</H3>
       {loans.length > 0 ? (
         <HTMLTable>
