@@ -8,6 +8,7 @@ import { CONNECTION, LOAN } from '../../constants';
 import { LoanStatus, getStatusForUI } from './helpers';
 export * from './accept_loans';
 export * from './guarantee_loans';
+export * from './my_loans';
 
 interface Filters {
   excludeStatus?: LoanStatus[];
