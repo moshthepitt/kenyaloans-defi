@@ -8,11 +8,13 @@ import { CONNECTION, LOAN } from '../../constants';
 import { LoanStatus, getStatusForUI } from './helpers';
 export * from './accept_loans';
 export * from './guarantee_loans';
+export * from './investments';
 export * from './my_loans';
 
 interface Filters {
   excludeStatus?: LoanStatus[];
   initializer?: string;
+  investor?: string;
   status?: LoanStatus[];
 }
 
@@ -43,9 +45,16 @@ const Loans = (props: Props): JSX.Element => {
     if (filters.initializer) {
       loans = loans.filter((item) => item.initializerPubkey === filters.initializer);
     }
+    if (filters.investor) {
+      loans = loans.filter(
+        (item) =>
+          item.guarantorPubkey === filters.investor || item.lenderPubkey === filters.investor
+      );
+    }
     if (filters.status) {
       loans = loans.filter((item) => filters.status?.includes(item.status));
-    } else if (filters.excludeStatus) {
+    }
+    if (filters.excludeStatus) {
       loans = loans.filter((item) => !filters.excludeStatus?.includes(item.status));
     }
   }

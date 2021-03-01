@@ -16,6 +16,7 @@ import {
   WALLET,
   SINGLE_GOSSIP,
   LOCALNET,
+  URL_INVESTMENTS,
   URL_ACCEPT,
   URL_APPLY,
   URL_GUARANTEE,
@@ -53,6 +54,7 @@ import {
   Apply,
   Guarantee,
   GuaranteeLoans,
+  Investments,
   Loans,
   MyLoans,
   Repay,
@@ -187,6 +189,11 @@ export default function App(): JSX.Element {
       <Link to={URL_ACCEPT} style={{ textDecoration: 'none', display: 'block' }}>
         <MenuItem icon="timeline-line-chart" text="Lend" />
       </Link>
+      {wallet && wallet._publicKey && (
+        <Link to={URL_INVESTMENTS} style={{ textDecoration: 'none', display: 'block' }}>
+          <MenuItem icon="timeline-line-chart" text="Investments" />
+        </Link>
+      )}
     </Menu>
   );
 
@@ -264,6 +271,17 @@ export default function App(): JSX.Element {
                       loanProgramId={PROGRAM_ID}
                     />
                   </Route>
+                  {wallet && wallet._publicKey && (
+                    <Route path={URL_INVESTMENTS}>
+                      <Loans
+                        Component={Investments}
+                        filters={{
+                          investor: wallet.publicKey.toBase58(),
+                        }}
+                        loanProgramId={PROGRAM_ID}
+                      />
+                    </Route>
+                  )}
                 </React.Fragment>
               )}
             </Switch>

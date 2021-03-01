@@ -17,6 +17,7 @@ export const NONE = 'none';
 export const APPLICATION_FEE = 0.01;
 
 export const URL_LOANS = '/loans';
+export const URL_INVESTMENTS = '/investments';
 export const URL_MY_LOANS = '/my-loans';
 export const URL_APPLY = '/apply';
 export const URL_GUARANTEE = '/collateral';
