@@ -43,7 +43,7 @@ const Apply = (): JSX.Element => {
       {ifDoneHere && <Redirect to={URL_MY_LOANS} />}
       <h3 className="bp3-heading">Apply For Loan</h3>
       <Formik
-        initialValues={{ amount: 100, tokenAccount: NONE }}
+        initialValues={{ amount: 599, tokenAccount: NONE }}
         validate={(values) => {
           const errors: { amount?: string; tokenAccount?: string } = {};
           if (!values.amount) {
@@ -71,7 +71,7 @@ const Apply = (): JSX.Element => {
       >
         {({ isSubmitting, errors }) => (
           <Form>
-            <label htmlFor="email">Amount</label>
+            <label htmlFor="amount">Amount</label>
             <Field id="amount" type="number" name="amount" />
             <ErrorMessage name="amount" component="p" />
             <label htmlFor="tokenAccount">Currency</label>

@@ -1,6 +1,5 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
+import { Redirect, useParams } from 'react-router-dom';
 import { Spinner, Callout, Card, H3, Intent } from '@blueprintjs/core';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { useQuery } from 'react-query';
