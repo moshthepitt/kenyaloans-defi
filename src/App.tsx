@@ -54,6 +54,7 @@ import {
   Guarantee,
   GuaranteeLoans,
   Loans,
+  MyLoans,
   Repay,
   WalletConnection,
 } from './components';
@@ -226,6 +227,7 @@ export default function App(): JSX.Element {
               {PROGRAM_ID && wallet && wallet._publicKey && (
                 <Route path={URL_MY_LOANS}>
                   <Loans
+                    Component={MyLoans}
                     filters={{ initializer: wallet.publicKey.toBase58() }}
                     loanProgramId={PROGRAM_ID}
                   />
