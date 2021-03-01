@@ -15,7 +15,7 @@ import { APPLICATION_FEE, LE, LOAN, MAX, SINGLE, SINGLE_GOSSIP } from '../consta
 import { success, failure } from './types';
 import type { Result } from './types';
 import { LOAN_ACCOUNT_DATA_LAYOUT } from './layout';
-import { initializeAccount, mintTo, TOKEN_PROGRAM_ID } from './token';
+import { initializeAccount, TOKEN_PROGRAM_ID } from './token';
 
 /**
  * @param connection - the connection to the blockchain
@@ -68,61 +68,6 @@ export async function signAndSendTransaction(
   }
 
   return success(result);
-}
-
-/**
- * @param connection - the connection to the blockchain
- * @param wallet - the wallet (represents the person doing the transaction)
- * @param mintPublicKey - the mint public key
- * @param newAccount - the new account
- * @param amount - the amount to mint to the new account (optional)
- */
-export async function createAndInitializeTokenAccount(
-  connection: Connection,
-  wallet: WalletType,
-  mintPublicKey: PublicKey,
-  newAccount: Account,
-  amount = 0
-): Promise<Result<TransactionSignature>> {
-  const transaction = new Transaction();
-  try {
-    transaction.add(
-      SystemProgram.createAccount({
-        fromPubkey: wallet.publicKey,
-        newAccountPubkey: newAccount.publicKey,
-        lamports: await connection.getMinimumBalanceForRentExemption(
-          AccountLayout.span,
-          SINGLE_GOSSIP
-        ),
-        space: AccountLayout.span,
-        programId: TOKEN_PROGRAM_ID,
-      })
-    );
-  } catch (error) {
-    return failure(error);
-  }
-
-  transaction.add(
-    initializeAccount({
-      account: newAccount.publicKey,
-      mint: mintPublicKey,
-      owner: wallet.publicKey,
-    })
-  );
-
-  if (amount > 0) {
-    transaction.add(
-      mintTo({
-        amount,
-        destination: newAccount.publicKey,
-        mint: mintPublicKey,
-        mintAuthority: wallet.publicKey,
-      })
-    );
-  }
-
-  const signers = [newAccount];
-  return await signAndSendTransaction(connection, transaction, wallet, signers);
 }
 
 interface InitLoanParams {
