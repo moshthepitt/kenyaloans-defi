@@ -13,7 +13,7 @@ const BorrowerPanel = () => (
     </p>
     <ol>
       <li>Click on &quot;Apply&quot; under the &quot;Borrow menu&quot; item </li>
-      <li>Fill in the loan application form </li>
+      <li>Fill in the loan application form (and pay the loan application fee) </li>
       <li>Once we match you with a lender, funds will be sent directly to your account.</li>
     </ol>
   </div>
@@ -23,9 +23,14 @@ const GuarantorPanel = () => (
   <div>
     <H4>How To Provide Collateral For Profit</H4>
     <p className={Classes.RUNNING_TEXT}>
-      Lots of people use React as the V in MVC. Since React makes no assumptions about the rest of
-      your technology stack, it&apos;s easy to try it out on a small feature in an existing project.
+      A Guarantor provides collateral for a given loan request and receives a significant portion of
+      the interest charged on the loan as payment.
     </p>
+    <ol>
+      <li>Click on &quot;Provide Collateral&quot; under the &quot;Lend menu&quot; item </li>
+      <li>Select one of the available loans </li>
+      <li>Fill in the Guarantee Loan form</li>
+    </ol>
   </div>
 );
 
@@ -33,9 +38,14 @@ const LenderPanel = () => (
   <div>
     <H4>How To Provide Debt Finance For Profit</H4>
     <p className={Classes.RUNNING_TEXT}>
-      Lots of people use React as the V in MVC. Since React makes no assumptions about the rest of
-      your technology stack, it&apos;s easy to try it out on a small feature in an existing project.
+      As a lender, you have a great opportunity to earn a relatively-risk-free return on investment
+      by lending money for fully collaterized loans.
     </p>
+    <ol>
+      <li>Click on &quot;Lend&quot; under the &quot;Lend menu&quot; item </li>
+      <li>Select one of the available loans </li>
+      <li>Fill in the Lend Loan form</li>
+    </ol>
   </div>
 );
 
@@ -73,10 +83,10 @@ export const Home = (): JSX.Element => {
           </Link>
         </React.Fragment>
       )}
-      <hr />
       <Callout intent="warning">
         Kenya Loans is only available on the devnet Solana network as it is still in development.
       </Callout>
+      <hr />
     </div>
   );
 };
