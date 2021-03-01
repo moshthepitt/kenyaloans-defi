@@ -1,6 +1,6 @@
 # Kenya Loans
 
-Kenya Loans is an application built on the Solana blockchain that aims to bring affordable and accessible loans to the masses - starting with Kenya first.  Kenya Loans is powered by a smart contracted that I can "Loans254".
+Kenya Loans is an application built on the Solana blockchain that aims to bring affordable and accessible loans to the masses - starting with Kenya first.  Kenya Loans is powered by a smart contracted that I call "Loans254".
 
 ## Loans254
 
