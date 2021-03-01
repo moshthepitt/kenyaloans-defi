@@ -1,6 +1,6 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
-import { Spinner } from '@blueprintjs/core';
+import { Spinner, Callout } from '@blueprintjs/core';
 import { useQuery } from 'react-query';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { initLoan } from '../utils/transaction';
@@ -27,7 +27,11 @@ const Apply = (): JSX.Element => {
   }
 
   if (!wallet || !wallet._publicKey) {
-    return <span>{CONNECT_TO_WALLET}</span>;
+    return (
+      <div className="column">
+        <span>{CONNECT_TO_WALLET}</span>
+      </div>
+    );
   }
 
   if (isLoading) {
@@ -42,6 +46,12 @@ const Apply = (): JSX.Element => {
     <div className="column">
       {ifDoneHere && <Redirect to={URL_MY_LOANS} />}
       <h3 className="bp3-heading">Apply For Loan</h3>
+      <Callout intent="primary">
+        Fill in the form below to apply for a loan.
+        <br />
+        You will need to select a token account that will be used to pay for the loan application
+        fee. This account will also determine the type of token to be used for the loan.
+      </Callout>
       <Formik
         initialValues={{ amount: 599, tokenAccount: NONE }}
         validate={(values) => {
@@ -74,7 +84,7 @@ const Apply = (): JSX.Element => {
             <label htmlFor="amount">Amount</label>
             <Field id="amount" type="number" name="amount" />
             <ErrorMessage name="amount" component="p" />
-            <label htmlFor="tokenAccount">Currency</label>
+            <label htmlFor="tokenAccount">Token Account</label>
             <Field as="select" id="tokenAccount" name="tokenAccount">
               <option value="none">--select--</option>
               {data &&
