@@ -11,6 +11,7 @@ import {
   URL_REPAY,
   URL_LOANS,
   URL_MY_LOANS,
+  URL_FAUCET,
 } from './constants';
 import { PROGRAM_ID, SOLANA_NETWORK_URL } from './env';
 import { useGlobalState } from './utils/state';
@@ -26,6 +27,7 @@ import {
   Repay,
   WalletConnection,
 } from './components';
+import { TestGen } from './components/testgen';
 import { LoanStatus } from './components/loans/helpers';
 
 import '@blueprintjs/core/lib/css/blueprint.css';
@@ -100,6 +102,9 @@ export default function App(): JSX.Element {
         <div className="column column-75">
           <div className="row">
             <Switch>
+              <Route path={URL_FAUCET}>
+                <TestGen />
+              </Route>
               <Route path={URL_APPLY}>
                 <Apply />
               </Route>
