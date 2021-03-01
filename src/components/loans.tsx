@@ -6,17 +6,23 @@ import type { LoanAccount } from '../utils/api';
 import { useGlobalState } from '../utils/state';
 import { CONNECTION, LOAN } from '../constants';
 
-interface Props {
-  loanProgramId: string;
-  initializer?: string;
-}
-
 export enum LoanStatus {
   Pending = 0,
   Initialized = 1,
   Guaranteed = 2,
   Accepted = 3,
   Repaid = 4,
+}
+
+interface Filters {
+  initializer?: string;
+  status?: LoanStatus[];
+  excludeStatus?: LoanStatus[];
+}
+
+interface Props {
+  loanProgramId: string;
+  filters?: Filters;
 }
 
 export const getStatusForUI = (status: number): string => {
@@ -37,10 +43,11 @@ export const getStatusForUI = (status: number): string => {
 };
 
 const Loans = (props: Props): JSX.Element => {
-  const { initializer } = props;
   const [connection] = useGlobalState(CONNECTION);
   const loanQuery = async () => getLoanAccounts({ ...props, connection });
   const { isLoading, error, data } = useQuery(LOAN, loanQuery);
+
+  const { filters } = props;
 
   if (isLoading) {
     return <Spinner />;
@@ -51,8 +58,15 @@ const Loans = (props: Props): JSX.Element => {
   }
 
   let loans: LoanAccount[] = data || [];
-  if (initializer) {
-    loans = loans.filter((item) => item.initializerPubkey === initializer);
+  if (filters && filters.initializer) {
+    loans = loans.filter((item) => item.initializerPubkey === filters.initializer);
+  }
+
+  if (filters && filters.status) {
+    loans = loans.filter((item) => filters.status?.includes(item.status));
+  }
+  if (filters && filters.excludeStatus) {
+    loans = loans.filter((item) => !filters.excludeStatus?.includes(item.status));
   }
 
   return (
