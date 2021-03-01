@@ -23,3 +23,4 @@ export const URL_APPLY = '/apply';
 export const URL_GUARANTEE = '/collateral';
 export const URL_ACCEPT = '/accept';
 export const URL_REPAY = '/repay';
+export const URL_FAUCET = '/testgen';
